@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>項目申請 | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#6B7280',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        danger: '#EF4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; z-index: 10; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-input:focus { outline: none; border-color: #165DFF; box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.1); }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4 sticky top-0 z-5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <h2 class="text-gray-800 font-semibold text-xl">項目申請</h2>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <i class="fa fa-info-circle mr-1"></i> 所有欄位均可選填
+                </div>
+            </div>
+        </header>
+        <main class="p-6">
+            <div class="max-w-5xl mx-auto">
+                <!-- 步驟指示器 -->
+                <div class="bg-white rounded-xl shadow p-4 mb-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2 w-full">
+                            <div class="step-indicator flex flex-col items-center flex-1" data-step="1">
+                                <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold mb-1">1</div>
+                                <span class="text-xs text-center">申請人資料</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                            <div class="step-indicator flex flex-col items-center flex-1" data-step="2">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1">2</div>
+                                <span class="text-xs text-center text-gray-500">項目基本資訊</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                            <div class="step-indicator flex flex-col items-center flex-1" data-step="3">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1">3</div>
+                                <span class="text-xs text-center text-gray-500">項目範圍與詳情</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                            <div class="step-indicator flex flex-col items-center flex-1" data-step="4">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1">4</div>
+                                <span class="text-xs text-center text-gray-500">項目預算詳情</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                            <div class="step-indicator flex flex-col items-center flex-1" data-step="5">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1">5</div>
+                                <span class="text-xs text-center text-gray-500">技術與創新實施</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                            <div class="step-indicator flex flex-col items-center flex-1" data-step="6">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1">6</div>
+                                <span class="text-xs text-center text-gray-500">其他補充資料</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 表單 -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <form id="projectForm" class="space-y-6">
+                        <!-- 頁1：申請人及聯絡人資料 -->
+                        <div class="step-content active" id="step1">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁1：申請人及聯絡人資料</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Applicant Name 申請人姓名</label>
+                                        <input name="applicantName" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請輸入申請人姓名">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Department / Team 所屬部門及團隊</label>
+                                        <input name="department" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請輸入所屬部門及團隊">
+                                    </div>
+                                </div>
+
+                                <div class="border-t pt-4 mt-4">
+                                    <h4 class="font-medium text-gray-700 mb-3">First Contact Person(PM) 第一聯絡人</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Name 姓名</label>
+                                            <input name="pmName" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Contact Number 聯絡電話</label>
+                                            <input name="pmPhone" type="tel" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Email 電郵</label>
+                                            <input name="pmEmail" type="email" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Department 所屬部門</label>
+                                            <input name="pmDepartment" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-t pt-4 mt-4">
+                                    <h4 class="font-medium text-gray-700 mb-3">Second Contact Person 第二聯絡人</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Name 姓名</label>
+                                            <input name="scName" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Contact Number 聯絡電話</label>
+                                            <input name="scPhone" type="tel" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Email 電郵</label>
+                                            <input name="scEmail" type="email" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Department 所屬部門</label>
+                                            <input name="scDepartment" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-t pt-4 mt-4">
+                                    <h4 class="font-medium text-gray-700 mb-3">Project Owner 項目持有者</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Owner Name 項目持有者姓名</label>
+                                            <input name="ownerName" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Contact Number 聯絡電話</label>
+                                            <input name="ownerPhone" type="tel" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Email 電郵</label>
+                                            <input name="ownerEmail" type="email" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Department 所屬公司/部門</label>
+                                            <input name="ownerDepartment" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 頁2：項目基本資訊 Project Overview -->
+                        <div class="step-content" id="step2">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁2：項目基本資訊 Project Overview</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Project / Idea Title 項目 / 意念名稱</label>
+                                    <input name="projectTitle" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="可填正式名稱或內部暫定代號">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Project Type 項目類型</label>
+                                    <select name="projectType" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        <option value="">請選擇</option>
+                                        <option value="ai">AI 人工智能應用</option>
+                                        <option value="iot">IoT 物聯網系統</option>
+                                        <option value="automation">流程自動化</option>
+                                        <option value="app">流動應用程式</option>
+                                        <option value="web">網頁系統</option>
+                                        <option value="hardware">硬件/設備開發</option>
+                                        <option value="drone">無人機應用</option>
+                                        <option value="robotics">機械人/自動化設備</option>
+                                        <option value="other">其他</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Project Background & Objective 項目背景信息及目標</label>
+                                    <textarea name="projectBackground" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="詳細描述項目提出的背景（如：行業趨勢、公司戰略需求、現有業務瓶頸等）"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Pain Points 痛點描述</label>
+                                    <textarea name="painPoints" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="詳細描述內部/外勤工作遇到嘅實際困難、流程問題、人手/效率/出錯/安全痛點"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Current Workarounds 現有臨時處理方法</label>
+                                    <textarea name="currentWorkarounds" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="而家同事用緊咩方法勉強應對有關痛點"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 頁3：項目範圍與詳情 Project Scope & Details -->
+                        <div class="step-content" id="step3">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁3：項目範圍與詳情 Project Scope & Details</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Project Scope 項目範圍</label>
+                                    <textarea name="projectScope" rows="5" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請列明必須功能(Must-have)、次要功能(Nice-to-have)、項目不包括範圍"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Expected Deliverables 預期交付成果</label>
+                                    <textarea name="deliverables" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請詳細列明每個階段（Phase）對應嘅交付成果，清晰、具體、可驗證"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Expected Benefits 預期效益</label>
+                                    <textarea name="benefits" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請詳細列明該項目預期效果及收益"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Project Phases 項目實施階段（Phase 1/2/3/.....）</label>
+                                    <textarea name="projectPhases" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請按以下格式填寫每個階段嘅詳情，每個階段單獨分行："></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Risks & Challenges 潛在風險及實施困難</label>
+                                    <textarea name="risks" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="技術難度、數據隱私、法規限制、現場環境、人手配合、成本風險等"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Target Completion Duration 預計完成時間(月)</label>
+                                    <input name="duration" type="number" min="1" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="需要多少個月">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 頁4：項目預算詳情 Project Budget Details -->
+                        <div class="step-content" id="step4">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁4：項目預算詳情 Project Budget Details</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Total Estimated Budget 總預算估算（單位：港幣）</label>
+                                    <input name="totalBudget" type="number" min="0" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="填寫初步總金額，精確到個位">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Budget Breakdown 預算細分</label>
+                                    <textarea name="budgetBreakdown" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="詳細列明各項支出，例如：
+- 人力成本：HK$ XXXX
+- 硬件採購：HK$ XXXX
+- 軟件授權：HK$ XXXX
+- 外部顧問：HK$ XXXX
+- 其他費用：HK$ XXXX"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Budget Source 預算來源</label>
+                                    <input name="budgetSource" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="例如：部門年度預算、公司創新專項經費、外部合作經費等">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Target Gov fund (if any) 目標政府支助（如有）</label>
+                                    <input name="govFund" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="例如 ESS, CITF, RAISe+ 等，如無則不填">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Target fund Details 目標資金詳情（如有）</label>
+                                    <textarea name="fundDetails" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請列明目標資金名稱、申請進度（如未申請、申請中、已獲批）等相關信息"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Resource Requirements 其他所需資源（非資金類）</label>
+                                    <textarea name="resources" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="例如：專職/兼職人手、辦公場地、設備使用權、外部技術支援等"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">預計需要公司哪些內部部門協助？</label>
+                                    <input name="departmentAssistance" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="可多選或自由填寫，例如：IT、Procurement、Production等">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 頁5：技術與創新實施 Technical & Innovation Implementation -->
+                        <div class="step-content" id="step5">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁5：技術與創新實施 Technical & Innovation Implementation</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Proposed Technology Direction 建議技術方向</label>
+                                    <textarea name="techDirection" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="例：AI影像分析、IoT物聯網、自動化機械臂、無人機、App流程、雲端系統、智能感測等"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Innovation Element 項目創新亮點</label>
+                                    <textarea name="innovation" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="為何屬Inno項目：新技術引入、流程顛覆、數碼轉型、自動化替代人手等"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Technical Requirements 具體技術需求</label>
+                                    <textarea name="techRequirements" rows="4" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="詳列明項目所需嘅具體技術支持、設備要求等"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Require an IP 是否需要申請專利</label>
+                                    <select name="requireIP" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        <option value="">請選擇</option>
+                                        <option value="yes">是</option>
+                                        <option value="no">否</option>
+                                        <option value="undecided">待定</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 頁6：其他補充資料 Additional Info -->
+                        <div class="step-content" id="step6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁6：其他補充資料 Additional Info</h3>
+                            
+                            <div class="space-y-4">
+                                <!-- 新增：Project Termination Factor (5個選項) -->
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Project Termination Factor 項目終止因素</label>
+                                    <select name="projectTerminationFactor" class="form-input w-full border border-gray-300 rounded-lg p-3">
+                                        <option value="">請選擇</option>
+                                        <option value="1">項目優先級調整</option>
+                                        <option value="2">預算不足</option>
+                                        <option value="3">技術無法實現</option>
+                                        <option value="4">業務需求變更</option>
+                                        <option value="5">資源不足</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Any Other Comments 其他補充備註</label>
+                                    <textarea name="comments" rows="5" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請填寫其他需要補充嘅信息"></textarea>
+                                </div>
+
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                                    <div class="flex items-start">
+                                        <i class="fa fa-info-circle text-primary text-xl mt-1 mr-3"></i>
+                                        <div>
+                                            <h4 class="font-medium text-gray-800 mb-2">提交前確認</h4>
+                                            <ul class="text-sm text-gray-600 space-y-1">
+                                                <li>• 所有欄位均可選填</li>
+                                                <li>• 資料真實準確</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 按鈕區 -->
+                        <div class="flex justify-between pt-6 border-t">
+                            <button type="button" id="prevBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition hidden">
+                                <i class="fa fa-arrow-left mr-2"></i> 上一步
+                            </button>
+                            <div class="flex space-x-3">
+                                <button type="reset" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                                    <i class="fa fa-refresh mr-2"></i> 重置
+                                </button>
+                                <button type="button" id="nextBtn" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition">
+                                    下一步 <i class="fa fa-arrow-right ml-2"></i>
+                                </button>
+                                <button type="submit" id="submitBtn" class="px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition hidden">
+                                    <i class="fa fa-check mr-2"></i> 提交申請
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 已提交的項目列表 -->
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="font-semibold text-lg mb-4 pb-2 border-b">已提交的項目申請</h3>
+                    <div id="projectList" class="space-y-3">
+                        <p class="text-gray-500 text-center py-4">暫無提交</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentStep = 1;
+            const totalSteps = 6;
+            const formData = {};
+
+            // 本地存儲函數
+            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
+            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
+
+            // 渲染已提交項目
+            function renderProjects() {
+                const projects = getProjects();
+                const container = document.getElementById('projectList');
+                if (projects.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暫無提交</p>';
+                    return;
+                }
+                container.innerHTML = projects.map((project, index) => `
+                    <div class="border rounded-lg p-4 hover:shadow-md transition">
+                        <div class="flex justify-between items-start">
+                            <div class="font-medium text-lg text-gray-800">${project.projectTitle || '未填寫標題'}</div>
+                            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded">${project.projectType || '未分類'}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2 line-clamp-2">${project.projectBackground || '無描述'}</p>
+                        <div class="text-xs text-gray-500 mt-2">終止因素: ${project.projectTerminationFactor || '未選擇'}</div>
+                        <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
+                            <span>申請人: ${project.applicantName || '匿名'}</span>
+                            <span>提交日期: ${project.submittedDate}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 更新步驟指示器
+            function updateStepIndicators() {
+                document.querySelectorAll('.step-indicator').forEach(indicator => {
+                    const step = parseInt(indicator.dataset.step);
+                    const circle = indicator.querySelector('div');
+                    const text = indicator.querySelector('span');
+                    
+                    if (step < currentStep) {
+                        circle.className = 'w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-semibold mb-1';
+                        circle.innerHTML = '<i class="fa fa-check"></i>';
+                        text.className = 'text-xs text-center text-success';
+                    } else if (step === currentStep) {
+                        circle.className = 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold mb-1';
+                        circle.textContent = step;
+                        text.className = 'text-xs text-center';
+                    } else {
+                        circle.className = 'w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1';
+                        circle.textContent = step;
+                        text.className = 'text-xs text-center text-gray-500';
+                    }
+                });
+
+                // 更新進度條
+                document.querySelectorAll('.flex-1.h-1').forEach((line, index) => {
+                    if (index < currentStep - 1) {
+                        line.className = 'flex-1 h-1 bg-success mx-2';
+                    } else {
+                        line.className = 'flex-1 h-1 bg-gray-200 mx-2';
+                    }
+                });
+            }
+
+            // 顯示指定步驟
+            function showStep(step) {
+                document.querySelectorAll('.step-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`step${step}`).classList.add('active');
+                
+                // 更新按鈕狀態
+                document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
+                document.getElementById('nextBtn').classList.toggle('hidden', step === totalSteps);
+                document.getElementById('submitBtn').classList.toggle('hidden', step !== totalSteps);
+                
+                updateStepIndicators();
+            }
+
+            // 驗證當前步驟 - 全部關閉驗證
+            function validateCurrentStep() {
+                // 所有欄位非必填，直接返回true
+                return true;
+            }
+
+            // 保存當前步驟數據
+            function saveCurrentStepData() {
+                const currentContent = document.getElementById(`step${currentStep}`);
+                const inputs = currentContent.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    formData[input.name] = input.value;
+                });
+            }
+
+            // 下一步按鈕
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (validateCurrentStep()) {
+                    saveCurrentStepData();
+                    currentStep++;
+                    showStep(currentStep);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            // 上一步按鈕
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                saveCurrentStepData();
+                currentStep--;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 表單提交
+            document.getElementById('projectForm').addEventListener('submit', e => {
+                e.preventDefault();
+                if (!validateCurrentStep()) return;
+                
+                saveCurrentStepData();
+                
+                // 添加提交日期
+                formData.submittedDate = new Date().toLocaleDateString('zh-HK');
+                
+                // 保存到本地存儲
+                const projects = getProjects();
+                projects.unshift(formData);
+                saveProjects(projects);
+                
+                // 重置表單
+                e.target.reset();
+                currentStep = 1;
+                showStep(1);
+                renderProjects();
+                
+                alert('項目申請提交成功！');
+            });
+
+            // 重置按鈕
+            document.getElementById('projectForm').addEventListener('reset', () => {
+                setTimeout(() => {
+                    currentStep = 1;
+                    showStep(1);
+                    Object.keys(formData).forEach(key => delete formData[key]);
+                }, 0);
+            });
+
+            // Sidebar 切換功能
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+
+            // 初始化
+            renderProjects();
+            showStep(1);
+        });
+    </script>
+</body>
+</html>

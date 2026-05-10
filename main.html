@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的項目 | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .proj-card { @apply bg-white rounded-xl shadow p-5 hover:shadow-lg transition-all border border-gray-100; }
+        }
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <h2 class="text-gray-800 font-semibold">我的項目列表</h2>
+                </div>
+                <a href="create_project.html" class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+                    <i class="fa fa-plus mr-1"></i>新增項目
+                </a>
+            </div>
+        </header>
+
+        <main class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="projContainer"></div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
+            const projects = getProjects();
+            const container = document.getElementById('projContainer');
+
+            if(projects.length===0){
+                container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">暫無項目，請點擊新增項目建立</div>';
+            }else{
+                container.innerHTML = projects.map(p=>`
+                    <div class="proj-card">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-primary font-bold">${p.id}</span>
+                            <span class="text-xs px-2 py-1 rounded-full ${
+                                p.status==='Completed'?'bg-green-100 text-green-600':
+                                p.status==='In Progress'?'bg-blue-100 text-blue-600':'bg-gray-100 text-gray-600'
+                            }">${p.status}</span>
+                        </div>
+                        <h3 class="font-semibold mb-2 cursor-pointer hover:text-primary" onclick="location.href='detail_project.html?id=${p.id}'">${p.name}</h3>
+                        <p class="text-gray-500 text-sm mb-3">${p.description||'無描述'}</p>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <div><i class="fa fa-user mr-1"></i> ${p.manager||'未設定'}</div>
+                            <div><i class="fa fa-money mr-1"></i> HK$ ${Number(p.totalAmount||0).toLocaleString()}</div>
+                            <div><i class="fa fa-calendar mr-1"></i> ${p.startDate||''} ~ ${p.endDate||''}</div>
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <a href="detail_project.html?id=${p.id}" class="text-primary text-sm hover:underline">查看詳情</a>
+                            <a href="edit_project.html?id=${p.id}" class="text-gray-500 text-sm hover:underline">編輯</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Sidebar 切換
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+</html>

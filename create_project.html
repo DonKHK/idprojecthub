@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增項目 | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4">
+            <div class="flex items-center">
+                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-gray-800 font-semibold">新增項目</h2>
+            </div>
+        </header>
+
+        <main class="p-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
+                <form id="createForm" class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project ID（自動生成）</label>
+                            <input id="pid" readonly class="w-full border rounded p-2 bg-gray-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project Name *</label>
+                            <input name="name" required class="w-full border rounded p-2">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Description（簡短描述）</label>
+                            <input name="desc" class="w-full border rounded p-2">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Detail（詳細內容）</label>
+                            <textarea name="detail" rows="3" class="w-full border rounded p-2"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Technical Support</label>
+                            <input name="support" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project Manager</label>
+                            <input name="manager" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project Owner</label>
+                            <input name="owner" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Total Amount (HKD)</label>
+                            <input name="amount" type="number" value="0" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Start Date</label>
+                            <input name="start" type="date" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">End Date</label>
+                            <input name="end" type="date" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select name="status" class="w-full border rounded p-2">
+                                <option>Planning</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg">
+                        儲存項目
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
+            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
+
+            function generateId() {
+                const now = new Date();
+                const yy = now.getFullYear().toString().slice(2);
+                const mm = (now.getMonth()+1).toString().padStart(2,'0');
+                const prefix = yy+mm;
+                const list = getProjects().filter(x=>x.id.startsWith(prefix));
+                const seq = (list.length+1).toString().padStart(2,'0');
+                return prefix+seq;
+            }
+
+            document.getElementById('pid').value = generateId();
+
+            document.getElementById('createForm').addEventListener('submit', e => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const project = {
+                    id: document.getElementById('pid').value,
+                    name: fd.get('name'),
+                    description: fd.get('desc'),
+                    detail: fd.get('detail'),
+                    support: fd.get('support'),
+                    manager: fd.get('manager'),
+                    owner: fd.get('owner'),
+                    totalAmount: Number(fd.get('amount')||0),
+                    startDate: fd.get('start'),
+                    endDate: fd.get('end'),
+                    status: fd.get('status'),
+                    phases: []
+                };
+                const list = getProjects();
+                list.push(project);
+                saveProjects(list);
+                location.href = 'main.html';
+            });
+
+            // Sidebar 切換
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+</html>

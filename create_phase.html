@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增階段 | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4">
+            <div class="flex items-center">
+                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-gray-800 font-semibold">新增階段</h2>
+            </div>
+        </header>
+
+        <main class="p-6">
+            <div class="max-w-2xl mx-auto bg-white rounded-xl shadow p-6">
+                <form id="phaseForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">階段類型 *</label>
+                        <select name="type" required class="w-full border rounded p-2">
+                            <option value="Idea / R&D">Idea / R&D</option>
+                            <option value="Feasibility Study">Feasibility Study</option>
+                            <option value="POC">POC</option>
+                            <option value="Demo">Demo</option>
+                            <option value="Pilot / UAT">Pilot / UAT</option>
+                            <option value="Commercialization">Commercialization</option>
+                            <option value="Mass Production">Mass Production</option>
+                            <option value="Wrap up & Handover">Wrap up & Handover</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">開始日期</label>
+                            <input name="startDate" type="date" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">結束日期</label>
+                            <input name="endDate" type="date" class="w-full border rounded p-2">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">預算 (HKD)</label>
+                            <input name="budget" type="number" value="0" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">階段狀態</label>
+                            <select name="status" class="w-full border rounded p-2">
+                                <option value="Planning">Planning</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">主要描述</label>
+                        <textarea name="description" rows="3" class="w-full border rounded p-2"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="history.back()" class="px-4 py-2 border rounded">取消</button>
+                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded">儲存階段</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
+            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
+
+            const params = new URLSearchParams(window.location.search);
+            const projectId = params.get('id');
+            const projects = getProjects();
+            const project = projects.find(p => p.id === projectId);
+
+            if (!project) {
+                alert('項目不存在');
+                location.href = 'main.html';
+                return;
+            }
+
+            document.getElementById('phaseForm').addEventListener('submit', e => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                
+                if (!project.phases) project.phases = [];
+                project.phases.push({
+                    id: Date.now().toString(),
+                    type: fd.get('type'),
+                    startDate: fd.get('startDate'),
+                    endDate: fd.get('endDate'),
+                    budget: Number(fd.get('budget')||0),
+                    status: fd.get('status'),
+                    description: fd.get('description')
+                });
+                
+                saveProjects(projects);
+                location.href = `detail_project.html?id=${projectId}`;
+            });
+
+            // Sidebar 切換
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+</html>

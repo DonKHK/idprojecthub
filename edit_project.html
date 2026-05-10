@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯項目 | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4">
+            <div class="flex items-center">
+                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-gray-800 font-semibold">編輯項目</h2>
+            </div>
+        </header>
+
+        <main class="p-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
+                <form id="editForm" class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project ID</label>
+                            <input name="id" readonly class="w-full border rounded p-2 bg-gray-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project Name</label>
+                            <input name="name" class="w-full border rounded p-2">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Description</label>
+                            <input name="desc" class="w-full border rounded p-2">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Detail</label>
+                            <textarea name="detail" rows="3" class="w-full border rounded p-2"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Technical Support</label>
+                            <input name="support" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project Manager</label>
+                            <input name="manager" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Project Owner</label>
+                            <input name="owner" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Total Amount (HKD)</label>
+                            <input name="amount" type="number" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Start Date</label>
+                            <input name="start" type="date" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">End Date</label>
+                            <input name="end" type="date" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select name="status" class="w-full border rounded p-2">
+                                <option>Planning</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg">
+                        更新項目
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
+            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
+
+            const params = new URLSearchParams(window.location.search);
+            const projectId = params.get('id');
+            const projects = getProjects();
+            const project = projects.find(p => p.id === projectId);
+
+            if (!project) {
+                alert('項目不存在');
+                location.href = 'main.html';
+                return;
+            }
+
+            document.querySelector('[name=id]').value = project.id;
+            document.querySelector('[name=name]').value = project.name;
+            document.querySelector('[name=desc]').value = project.description || '';
+            document.querySelector('[name=detail]').value = project.detail || '';
+            document.querySelector('[name=support]').value = project.support || '';
+            document.querySelector('[name=manager]').value = project.manager || '';
+            document.querySelector('[name=owner]').value = project.owner || '';
+            document.querySelector('[name=amount]').value = project.totalAmount || 0;
+            document.querySelector('[name=start]').value = project.startDate || '';
+            document.querySelector('[name=end]').value = project.endDate || '';
+            document.querySelector('[name=status]').value = project.status;
+
+            document.getElementById('editForm').addEventListener('submit', e => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                
+                project.name = fd.get('name');
+                project.description = fd.get('desc');
+                project.detail = fd.get('detail');
+                project.support = fd.get('support');
+                project.manager = fd.get('manager');
+                project.owner = fd.get('owner');
+                project.totalAmount = Number(fd.get('amount')||0);
+                project.startDate = fd.get('start');
+                project.endDate = fd.get('end');
+                project.status = fd.get('status');
+                
+                saveProjects(projects);
+                location.href = `detail_project.html?id=${projectId}`;
+            });
+
+            // Sidebar 切換
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府 Funding | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4">
+            <div class="flex items-center">
+                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-gray-800 font-semibold">政府 Funding 資訊</h2>
+            </div>
+        </header>
+        <main class="p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="bg-white rounded-xl shadow p-5">
+                        <h3 class="font-semibold text-lg mb-2">創新科技署資助計劃</h3>
+                        <p class="text-gray-600 text-sm mb-3">資助本地企業進行研發及創新活動</p>
+                        <div class="text-sm space-y-1">
+                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 1000萬</div>
+                            <div><span class="text-gray-500">資助比例：</span>最高 90%</div>
+                            <div><span class="text-gray-500">申請截止：</span>全年接受申請</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-5">
+                        <h3 class="font-semibold text-lg mb-2">BUD 專項基金</h3>
+                        <p class="text-gray-600 text-sm mb-3">協助企業發展品牌、升級轉型及拓展內銷市場</p>
+                        <div class="text-sm space-y-1">
+                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 700萬</div>
+                            <div><span class="text-gray-500">資助比例：</span>最高 50%</div>
+                            <div><span class="text-gray-500">申請截止：</span>全年接受申請</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-5">
+                        <h3 class="font-semibold text-lg mb-2">科技券計劃</h3>
+                        <p class="text-gray-600 text-sm mb-3">資助本地中小企業使用科技服務和方案</p>
+                        <div class="text-sm space-y-1">
+                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 60萬</div>
+                            <div><span class="text-gray-500">資助比例：</span>最高 75%</div>
+                            <div><span class="text-gray-500">申請截止：</span>全年接受申請</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-5">
+                        <h3 class="font-semibold text-lg mb-2">數碼轉型支援先導計劃</h3>
+                        <p class="text-gray-600 text-sm mb-3">協助中小企業進行數碼轉型</p>
+                        <div class="text-sm space-y-1">
+                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 15萬</div>
+                            <div><span class="text-gray-500">資助比例：</span>最高 90%</div>
+                            <div><span class="text-gray-500">申請截止：</span>2026年12月31日</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar 切換
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+</html>

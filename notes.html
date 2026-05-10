@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>需注意事項 | PMIS_Don V2.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        warning: '#FF7D00'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; margin: 0; }
+        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
+        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+    <div class="main-content">
+        <header class="bg-white shadow-sm px-6 py-4">
+            <div class="flex items-center">
+                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-gray-800 font-semibold">需注意事項</h2>
+            </div>
+        </header>
+        <main class="p-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
+                <div class="space-y-4">
+                    <div class="border-l-4 border-warning pl-4 py-2">
+                        <h3 class="font-semibold text-lg">項目編號規則</h3>
+                        <p class="text-gray-600">自動生成 YYMMXX 格式，例如 260501 代表 2026年5月第1個項目</p>
+                    </div>
+                    <div class="border-l-4 border-warning pl-4 py-2">
+                        <h3 class="font-semibold text-lg">數據備份</h3>
+                        <p class="text-gray-600">所有數據保存在瀏覽器本地，請定期導出備份，避免清除瀏覽器數據導致丟失</p>
+                    </div>
+                    <div class="border-l-4 border-warning pl-4 py-2">
+                        <h3 class="font-semibold text-lg">階段狀態</h3>
+                        <p class="text-gray-600">綠色=正常，黃色=3天內到期，紅色=已過期，請及時更新項目進度</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar 切換
+            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
+            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            function toggleSidebar() {
+                isHidden = !isHidden;
+                localStorage.setItem('sidebarHidden', isHidden);
+                
+                if (isHidden) {
+                    sidebarIframe.style.width = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebarIframe.style.width = '260px';
+                    mainContent.style.marginLeft = '260px';
+                }
+            }
+
+            if (isHidden) {
+                sidebarIframe.style.width = '0';
+                mainContent.style.marginLeft = '0';
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+</html>
