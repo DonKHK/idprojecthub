@@ -20,16 +20,27 @@
     </script>
     <style>
         body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
-        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+        .sidebar-iframe { 
+            width: 44px; 
+            height: 100vh; 
+            border: none; 
+            position: fixed; 
+            transition: all 0.4s ease; 
+            z-index: 10;
+        }
+        .main-content { 
+            margin-left: 44px; 
+            transition: all 0.4s ease; 
+        }
     </style>
 </head>
 <body>
-    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+    <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
+
     <div class="main-content">
         <header class="bg-white shadow-sm px-6 py-4">
             <div class="flex items-center">
-                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-xl p-2 rounded hover:bg-gray-100">
                     <i class="fa fa-bars"></i>
                 </button>
                 <h2 class="text-gray-800 font-semibold">政府 Funding 資訊</h2>
@@ -79,33 +90,34 @@
         </main>
     </div>
 
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar 切換
-            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
-            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            // Sidebar 控制
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'true';
+            const sidebarIframe = document.getElementById('sidebarFrame');
             const mainContent = document.querySelector('.main-content');
             const toggleBtn = document.getElementById('toggleSidebar');
 
-            function toggleSidebar() {
-                isHidden = !isHidden;
-                localStorage.setItem('sidebarHidden', isHidden);
-                
-                if (isHidden) {
-                    sidebarIframe.style.width = '0';
-                    mainContent.style.marginLeft = '0';
-                } else {
-                    sidebarIframe.style.width = '260px';
-                    mainContent.style.marginLeft = '260px';
-                }
+            function updateSidebar() {
+                const w = isCollapsed ? '44px' : '260px';
+                const m = isCollapsed ? '44px' : '260px';
+                sidebarIframe.style.width = w;
+                mainContent.style.marginLeft = m;
+                try {
+                    const doc = sidebarIframe.contentWindow.document.documentElement;
+                    if (doc) isCollapsed ? doc.classList.add('sidebar-collapsed') : doc.classList.remove('sidebar-collapsed');
+                } catch(e){}
             }
 
-            if (isHidden) {
-                sidebarIframe.style.width = '0';
-                mainContent.style.marginLeft = '0';
-            }
+            toggleBtn.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                updateSidebar();
+            });
 
-            toggleBtn.addEventListener('click', toggleSidebar);
+            sidebarIframe.addEventListener('load', () => setTimeout(updateSidebar, 100));
+            updateSidebar();
         });
     </script>
 </body>

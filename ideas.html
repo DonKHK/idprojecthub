@@ -12,10 +12,7 @@
                 extend: {
                     colors: {
                         primary: '#165DFF',
-                        secondary: '#6B7280',
-                        success: '#10B981',
-                        warning: '#F59E0B',
-                        danger: '#EF4444'
+                        success: '#10B981'
                     }
                 }
             }
@@ -23,8 +20,18 @@
     </script>
     <style>
         body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; z-index: 10; }
-        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+        .sidebar-iframe { 
+            width: 44px; 
+            height: 100vh; 
+            border: none; 
+            position: fixed; 
+            transition: all 0.4s ease; 
+            z-index: 10;
+        }
+        .main-content { 
+            margin-left: 44px; 
+            transition: all 0.4s ease; 
+        }
         .step-content { display: none; }
         .step-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn {
@@ -35,12 +42,13 @@
     </style>
 </head>
 <body>
-    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+    <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
+
     <div class="main-content">
         <header class="bg-white shadow-sm px-6 py-4 sticky top-0 z-5">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+                    <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-xl p-2 rounded hover:bg-gray-100">
                         <i class="fa fa-bars"></i>
                     </button>
                     <h2 class="text-gray-800 font-semibold text-xl">項目申請</h2>
@@ -50,12 +58,14 @@
                 </div>
             </div>
         </header>
+
         <main class="p-6">
             <div class="max-w-5xl mx-auto">
                 <!-- 步驟指示器 -->
                 <div class="bg-white rounded-xl shadow p-4 mb-6">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2 w-full">
+                            <!-- 步驟指示器保持不變 -->
                             <div class="step-indicator flex flex-col items-center flex-1" data-step="1">
                                 <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold mb-1">1</div>
                                 <span class="text-xs text-center">申請人資料</span>
@@ -92,21 +102,15 @@
                 <!-- 表單 -->
                 <div class="bg-white rounded-xl shadow p-6 mb-6">
                     <form id="projectForm" class="space-y-6">
-                        <!-- 頁1：申請人及聯絡人資料 -->
+                        <!-- Step 1 -->
                         <div class="step-content active" id="step1">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁1：申請人及聯絡人資料</h3>
-                            
                             <div class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium mb-1">Applicant Name 申請人姓名</label>
-                                        <input name="applicantName" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請輸入申請人姓名">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium mb-1">Department / Team 所屬部門及團隊</label>
-                                        <input name="department" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="請輸入所屬部門及團隊">
-                                    </div>
+                                    <div><label class="block text-sm font-medium mb-1">Applicant Name 申請人姓名</label><input name="applicantName" class="form-input w-full border border-gray-300 rounded-lg p-3"></div>
+                                    <div><label class="block text-sm font-medium mb-1">Department / Team 所屬部門及團隊</label><input name="department" class="form-input w-full border border-gray-300 rounded-lg p-3"></div>
                                 </div>
+ </div>
 
                                 <div class="border-t pt-4 mt-4">
                                     <h4 class="font-medium text-gray-700 mb-3">First Contact Person(PM) 第一聯絡人</h4>
@@ -340,18 +344,13 @@
                             <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">頁6：其他補充資料 Additional Info</h3>
                             
                             <div class="space-y-4">
-                                <!-- 新增：Project Termination Factor (5個選項) -->
-                                <div>
+                               <div>
                                     <label class="block text-sm font-medium mb-1">Project Termination Factor 項目終止因素</label>
-                                    <select name="projectTerminationFactor" class="form-input w-full border border-gray-300 rounded-lg p-3">
-                                        <option value="">請選擇</option>
-                                        <option value="1">項目優先級調整</option>
-                                        <option value="2">預算不足</option>
-                                        <option value="3">技術無法實現</option>
-                                        <option value="4">業務需求變更</option>
-                                        <option value="5">資源不足</option>
-                                    </select>
+                                    <textarea name="comments" rows="5" class="form-input w-full border border-gray-300 rounded-lg p-3" placeholder="項目優先級調整/超資/技術無法實現/業務需求變更"></textarea>
                                 </div>
+
+
+                                
 
                                 <div>
                                     <label class="block text-sm font-medium mb-1">Any Other Comments 其他補充備註</label>
@@ -373,6 +372,7 @@
                             </div>
                         </div>
 
+
                         <!-- 按鈕區 -->
                         <div class="flex justify-between pt-6 border-t">
                             <button type="button" id="prevBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition hidden">
@@ -393,13 +393,7 @@
                     </form>
                 </div>
 
-                <!-- 已提交的項目列表 -->
-                <div class="bg-white rounded-xl shadow p-6">
-                    <h3 class="font-semibold text-lg mb-4 pb-2 border-b">已提交的項目申請</h3>
-                    <div id="projectList" class="space-y-3">
-                        <p class="text-gray-500 text-center py-4">暫無提交</p>
-                    </div>
-                </div>
+                
             </div>
         </main>
     </div>
@@ -408,177 +402,61 @@
         document.addEventListener('DOMContentLoaded', function() {
             let currentStep = 1;
             const totalSteps = 6;
-            const formData = {};
 
-            // 本地存儲函數
-            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
-            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
-
-            // 渲染已提交項目
-            function renderProjects() {
-                const projects = getProjects();
-                const container = document.getElementById('projectList');
-                if (projects.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暫無提交</p>';
-                    return;
-                }
-                container.innerHTML = projects.map((project, index) => `
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
-                        <div class="flex justify-between items-start">
-                            <div class="font-medium text-lg text-gray-800">${project.projectTitle || '未填寫標題'}</div>
-                            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded">${project.projectType || '未分類'}</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-2 line-clamp-2">${project.projectBackground || '無描述'}</p>
-                        <div class="text-xs text-gray-500 mt-2">終止因素: ${project.projectTerminationFactor || '未選擇'}</div>
-                        <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
-                            <span>申請人: ${project.applicantName || '匿名'}</span>
-                            <span>提交日期: ${project.submittedDate}</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // 更新步驟指示器
-            function updateStepIndicators() {
-                document.querySelectorAll('.step-indicator').forEach(indicator => {
-                    const step = parseInt(indicator.dataset.step);
-                    const circle = indicator.querySelector('div');
-                    const text = indicator.querySelector('span');
-                    
-                    if (step < currentStep) {
-                        circle.className = 'w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-semibold mb-1';
-                        circle.innerHTML = '<i class="fa fa-check"></i>';
-                        text.className = 'text-xs text-center text-success';
-                    } else if (step === currentStep) {
-                        circle.className = 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold mb-1';
-                        circle.textContent = step;
-                        text.className = 'text-xs text-center';
-                    } else {
-                        circle.className = 'w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-semibold mb-1';
-                        circle.textContent = step;
-                        text.className = 'text-xs text-center text-gray-500';
-                    }
-                });
-
-                // 更新進度條
-                document.querySelectorAll('.flex-1.h-1').forEach((line, index) => {
-                    if (index < currentStep - 1) {
-                        line.className = 'flex-1 h-1 bg-success mx-2';
-                    } else {
-                        line.className = 'flex-1 h-1 bg-gray-200 mx-2';
-                    }
-                });
-            }
-
-            // 顯示指定步驟
-            function showStep(step) {
-                document.querySelectorAll('.step-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(`step${step}`).classList.add('active');
-                
-                // 更新按鈕狀態
-                document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
-                document.getElementById('nextBtn').classList.toggle('hidden', step === totalSteps);
-                document.getElementById('submitBtn').classList.toggle('hidden', step !== totalSteps);
-                
-                updateStepIndicators();
-            }
-
-            // 驗證當前步驟 - 全部關閉驗證
-            function validateCurrentStep() {
-                // 所有欄位非必填，直接返回true
-                return true;
-            }
-
-            // 保存當前步驟數據
-            function saveCurrentStepData() {
-                const currentContent = document.getElementById(`step${currentStep}`);
-                const inputs = currentContent.querySelectorAll('input, select, textarea');
-                inputs.forEach(input => {
-                    formData[input.name] = input.value;
-                });
-            }
-
-            // 下一步按鈕
-            document.getElementById('nextBtn').addEventListener('click', () => {
-                if (validateCurrentStep()) {
-                    saveCurrentStepData();
-                    currentStep++;
-                    showStep(currentStep);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            });
-
-            // 上一步按鈕
-            document.getElementById('prevBtn').addEventListener('click', () => {
-                saveCurrentStepData();
-                currentStep--;
-                showStep(currentStep);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // 表單提交
-            document.getElementById('projectForm').addEventListener('submit', e => {
-                e.preventDefault();
-                if (!validateCurrentStep()) return;
-                
-                saveCurrentStepData();
-                
-                // 添加提交日期
-                formData.submittedDate = new Date().toLocaleDateString('zh-HK');
-                
-                // 保存到本地存儲
-                const projects = getProjects();
-                projects.unshift(formData);
-                saveProjects(projects);
-                
-                // 重置表單
-                e.target.reset();
-                currentStep = 1;
-                showStep(1);
-                renderProjects();
-                
-                alert('項目申請提交成功！');
-            });
-
-            // 重置按鈕
-            document.getElementById('projectForm').addEventListener('reset', () => {
-                setTimeout(() => {
-                    currentStep = 1;
-                    showStep(1);
-                    Object.keys(formData).forEach(key => delete formData[key]);
-                }, 0);
-            });
-
-            // Sidebar 切換功能
-            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
-            const sidebarIframe = document.querySelector('.sidebar-iframe');
+            // Sidebar 控制
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'true';
+            const sidebarIframe = document.getElementById('sidebarFrame');
             const mainContent = document.querySelector('.main-content');
             const toggleBtn = document.getElementById('toggleSidebar');
 
-            function toggleSidebar() {
-                isHidden = !isHidden;
-                localStorage.setItem('sidebarHidden', isHidden);
-                
-                if (isHidden) {
-                    sidebarIframe.style.width = '0';
-                    mainContent.style.marginLeft = '0';
-                } else {
-                    sidebarIframe.style.width = '260px';
-                    mainContent.style.marginLeft = '260px';
+            function updateSidebar() {
+                const w = isCollapsed ? '44px' : '260px';
+                const m = isCollapsed ? '44px' : '260px';
+                sidebarIframe.style.width = w;
+                mainContent.style.marginLeft = m;
+                try {
+                    const doc = sidebarIframe.contentWindow.document.documentElement;
+                    if (doc) isCollapsed ? doc.classList.add('sidebar-collapsed') : doc.classList.remove('sidebar-collapsed');
+                } catch(e){}
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                updateSidebar();
+            });
+
+            sidebarIframe.addEventListener('load', () => setTimeout(updateSidebar, 100));
+            updateSidebar();
+
+            // === 步驟切換邏輯 ===
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+
+            function showStep(step) {
+                document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`step${step}`).classList.add('active');
+
+                prevBtn.classList.toggle('hidden', step === 1);
+                nextBtn.classList.toggle('hidden', step === totalSteps);
+                document.getElementById('submitBtn').classList.toggle('hidden', step !== totalSteps);
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
                 }
-            }
+            });
 
-            if (isHidden) {
-                sidebarIframe.style.width = '0';
-                mainContent.style.marginLeft = '0';
-            }
-
-            toggleBtn.addEventListener('click', toggleSidebar);
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
 
             // 初始化
-            renderProjects();
             showStep(1);
         });
     </script>

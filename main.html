@@ -14,7 +14,15 @@
                         primary: '#165DFF',
                         success: '#00B42A',
                         warning: '#FF7D00',
-                        danger: '#F53F3F'
+                        danger: '#F53F3F',
+                        dark: '#0F172A',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        card: '0 10px 40px rgba(0, 0, 0, 0.08)',
+                        cardHover: '0 20px 65px rgba(22, 93, 255, 0.13)',
                     }
                 }
             }
@@ -22,94 +30,290 @@
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
-            .proj-card { @apply bg-white rounded-xl shadow p-5 hover:shadow-lg transition-all border border-gray-100; }
+            .card-gradient {
+                background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            }
+            .dashboard-bg {
+                background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.92);
+                backdrop-filter: blur(12px);
+            }
+            .badge-glow {
+                box-shadow: 0 0 12px rgba(22, 93, 255, 0.15);
+            }
         }
-        body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
-        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+    </style>
+    <style>
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+        .sidebar-iframe { 
+            width: 44px; 
+            height: 100vh; 
+            border: none; 
+            position: fixed; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 10;
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.06);
+        }
+        .main-content { 
+            margin-left: 44px; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        /* 高級 Dashboard 項目卡片 */
+        .proj-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.8);
+            overflow: hidden;
+        }
+        .proj-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 22px 65px rgba(22, 93, 255, 0.13);
+        }
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            width: 110px;
+            flex-shrink: 0;
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+        /* 階段明細列 */
+        .phase-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(226, 232, 240, 0.5);
+        }
+        .phase-row:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
-<body>
-    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+<body class="dashboard-bg">
+    <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
 
-    <div class="main-content">
-        <header class="bg-white shadow-sm px-6 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
+    <div class="main-content min-h-screen">
+        <!-- 毛玻璃頂部導航 -->
+        <header class="glass sticky top-0 z-20 px-6 py-5 shadow-sm">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-5">
+                <div class="flex items-center gap-4">
+                    <button id="toggleSidebar" class="text-gray-600 hover:text-primary text-2xl p-2.5 rounded-xl hover:bg-primary/5 transition-all">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <h2 class="text-gray-800 font-semibold">我的項目列表</h2>
+                    <h2 class="text-2xl font-bold text-dark tracking-tight">我的項目</h2>
                 </div>
-                <a href="create_project.html" class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
-                    <i class="fa fa-plus mr-1"></i>新增項目
-                </a>
+
+                <!-- 高級搜索 + 新增 -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="搜尋項目 ID / 名稱 / 負責人..." 
+                        class="px-4 py-3 rounded-xl border border-gray-200 w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                    <a href="create_project.html" class="bg-primary text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-primary/90 transition flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+                        <i class="fa fa-plus"></i> 新增項目
+                    </a>
+                </div>
             </div>
         </header>
 
-        <main class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="projContainer"></div>
+        <main class="p-6 pb-12">
+            <!-- 項目卡片網格 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="projContainer"></div>
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
-            const projects = getProjects();
+            const projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
             const container = document.getElementById('projContainer');
+            const searchInput = document.getElementById('searchInput');
 
-            if(projects.length===0){
-                container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">暫無項目，請點擊新增項目建立</div>';
-            }else{
-                container.innerHTML = projects.map(p=>`
-                    <div class="proj-card">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-primary font-bold">${p.id}</span>
-                            <span class="text-xs px-2 py-1 rounded-full ${
-                                p.status==='Completed'?'bg-green-100 text-green-600':
-                                p.status==='In Progress'?'bg-blue-100 text-blue-600':'bg-gray-100 text-gray-600'
-                            }">${p.status}</span>
-                        </div>
-                        <h3 class="font-semibold mb-2 cursor-pointer hover:text-primary" onclick="location.href='detail_project.html?id=${p.id}'">${p.name}</h3>
-                        <p class="text-gray-500 text-sm mb-3">${p.description||'無描述'}</p>
-                        <div class="text-sm text-gray-600 space-y-1">
-                            <div><i class="fa fa-user mr-1"></i> ${p.manager||'未設定'}</div>
-                            <div><i class="fa fa-money mr-1"></i> HK$ ${Number(p.totalAmount||0).toLocaleString()}</div>
-                            <div><i class="fa fa-calendar mr-1"></i> ${p.startDate||''} ~ ${p.endDate||''}</div>
-                        </div>
-                        <div class="mt-4 flex gap-2">
-                            <a href="detail_project.html?id=${p.id}" class="text-primary text-sm hover:underline">查看詳情</a>
-                            <a href="edit_project.html?id=${p.id}" class="text-gray-500 text-sm hover:underline">編輯</a>
+            // ============== 核心：日期狀態判斷（14日即將到期） ==============
+            function getDateStatus(endDate) {
+                if (!endDate) return 'normal';
+                const today = new Date();
+                const end = new Date(endDate);
+                const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays >= 14) return 'normal';
+                if (diffDays >= 0) return 'warning';
+                return 'expired';
+            }
+
+            // ============== 渲染所有階段明細 ==============
+            function renderPhaseList(phases = []) {
+                if (phases.length === 0) {
+                    return `<div class="text-gray-400 text-sm italic">暫無階段</div>`;
+                }
+
+                return phases.map(phase => {
+                    // 階段名稱
+                    const phaseName = phase.type || '未命名階段';
+                    // 階段狀態
+                    const phaseStatus = phase.status || 'Planning';
+                    // 日期狀態（只有進行中先顯示）
+                    let dateBadge = '';
+                    if (phaseStatus === 'In Progress') {
+                        const dateStatus = getDateStatus(phase.endDate);
+                        if (dateStatus === 'normal') {
+                            dateBadge = `<span class="status-badge bg-success/10 text-success">正常</span>`;
+                        } else if (dateStatus === 'warning') {
+                            dateBadge = `<span class="status-badge bg-warning/10 text-warning">即將到期</span>`;
+                        } else {
+                            dateBadge = `<span class="status-badge bg-danger/10 text-danger">過期</span>`;
+                        }
+                    }
+
+                    // 階段狀態標籤
+                    let statusBadge = '';
+                    if (phaseStatus === 'Completed') {
+                        statusBadge = `<span class="status-badge bg-success/10 text-success">已完成</span>`;
+                    } else if (phaseStatus === 'In Progress') {
+                        statusBadge = `<span class="status-badge bg-primary/10 text-primary">進行中</span>`;
+                    } else {
+                        statusBadge = `<span class="status-badge bg-gray-100 text-gray-600">規劃中</span>`;
+                    }
+
+                    return `
+                    <div class="phase-row">
+                        <div class="text-sm font-medium text-gray-800">${phaseName}</div>
+                        <div class="flex items-center gap-2">
+                            ${statusBadge}
+                            ${dateBadge}
                         </div>
                     </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
-            // Sidebar 切換
-            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
-            const sidebarIframe = document.querySelector('.sidebar-iframe');
-            const mainContent = document.querySelector('.main-content');
-            const toggleBtn = document.getElementById('toggleSidebar');
-
-            function toggleSidebar() {
-                isHidden = !isHidden;
-                localStorage.setItem('sidebarHidden', isHidden);
-                
-                if (isHidden) {
-                    sidebarIframe.style.width = '0';
-                    mainContent.style.marginLeft = '0';
-                } else {
-                    sidebarIframe.style.width = '260px';
-                    mainContent.style.marginLeft = '260px';
+            // ============== 渲染高級項目卡片 ==============
+            function renderProjects(filtered = projects) {
+                if(filtered.length === 0){
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-24">
+                            <i class="fa fa-folder-open text-6xl text-gray-300 mb-5"></i>
+                            <p class="text-xl text-gray-400">暫無項目</p>
+                            <a href="create_project.html" class="inline-block mt-7 bg-primary text-white px-7 py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition">
+                                建立第一個項目
+                            </a>
+                        </div>`;
+                    return;
                 }
+
+                container.innerHTML = filtered.map(p => {
+                    return `
+                    <div class="proj-card p-7">
+                        <!-- 卡片頂部 -->
+                        <div class="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
+                            <h3 class="text-xl font-bold text-dark truncate">${p.name || '未命名項目'}</h3>
+                            <span class="status-badge bg-primary/10 text-primary">${p.id || '—'}</span>
+                        </div>
+
+                        <!-- 基本資訊 -->
+                        <div class="space-y-1 mb-6">
+                            <div class="info-row">
+                                <span class="info-label">項目描述</span>
+                                <span class="text-gray-700 line-clamp-2">${p.description || '—'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">項目經理</span>
+                                <span class="text-dark">${p.manager || '—'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">負責人</span>
+                                <span class="text-dark">${p.owner || '—'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">技術支援</span>
+                                <span class="text-dark">${p.support || '—'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">總金額</span>
+                                <span class="text-dark font-bold">HK$ ${Number(p.totalAmount || 0).toLocaleString()}</span>
+                            </div>
+                        </div>
+
+                        <!-- ========== 階段明細清單（重點） ========== -->
+                        <div class="mb-6">
+                            <div class="text-sm font-semibold text-gray-600 mb-3">階段狀態 & 進度</div>
+                            <div class="space-y-1">
+                                ${renderPhaseList(p.phases)}
+                            </div>
+                        </div>
+
+                        <!-- 操作按鈕 -->
+                        <div class="flex gap-4">
+                            <a href="detail_project.html?id=${p.id}" 
+                               class="flex-1 text-center bg-primary text-white py-3 rounded-xl hover:bg-primary/90 transition shadow-lg shadow-primary/20">
+                                查看詳情
+                            </a>
+                            <a href="edit_project.html?id=${p.id}" 
+                               class="flex-1 text-center bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-gray-200 transition">
+                                編輯項目
+                            </a>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
             }
 
-            if (isHidden) {
-                sidebarIframe.style.width = '0';
-                mainContent.style.marginLeft = '0';
+            renderProjects();
+
+            // 實時搜尋
+            searchInput.addEventListener('input', e => {
+                const kw = e.target.value.toLowerCase();
+                const data = projects.filter(i => 
+                    (i.id||'').toLowerCase().includes(kw) ||
+                    (i.name||'').toLowerCase().includes(kw) ||
+                    (i.owner||'').toLowerCase().includes(kw) ||
+                    (i.manager||'').toLowerCase().includes(kw)
+                );
+                renderProjects(data);
+            });
+
+            // 側邊欄控制
+            let collapse = localStorage.getItem('sidebarCollapsed') !== 'false';
+            const side = document.getElementById('sidebarFrame');
+            const main = document.querySelector('.main-content');
+            const btn = document.getElementById('toggleSidebar');
+
+            function update() {
+                const w = collapse ? '44px' : '260px';
+                const m = collapse ? '44px' : '260px';
+                side.style.width = w;
+                main.style.marginLeft = m;
             }
 
-            toggleBtn.addEventListener('click', toggleSidebar);
+            btn.addEventListener('click', () => {
+                collapse = !collapse;
+                localStorage.setItem('sidebarCollapsed', collapse);
+                update();
+            });
+
+            side.addEventListener('load', () => setTimeout(update, 100));
+            update();
         });
     </script>
 </body>

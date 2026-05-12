@@ -14,209 +14,313 @@
                         primary: '#165DFF',
                         success: '#00B42A',
                         warning: '#FF7D00',
-                        danger: '#F53F3F'
-                    }
+                        danger: '#F53F3F',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
                 }
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .status-badge { @apply px-2 py-1 rounded-full text-xs font-medium; }
-            .phase-normal { @apply bg-success/10 text-success; }
-            .phase-warning { @apply bg-warning/10 text-warning; }
-            .phase-expired { @apply bg-danger/10 text-danger; }
+    <style>
+        body {
+            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+            margin: 0;
+            font-family: 'Inter', sans-serif;
         }
-        body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { width: 260px; height: 100vh; border: none; position: fixed; transition: all 0.3s ease; }
-        .main-content { margin-left: 260px; transition: all 0.3s ease; }
+        .sidebar-iframe {
+            width: 44px;
+            height: 100vh;
+            border: none;
+            position: fixed;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        .main-content {
+            margin-left: 44px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Dashboard 卡片樣式 */
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        /* 資訊列樣式 */
+        .info-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            width: 180px;
+            font-weight: 600;
+            color: #64748b;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-value {
+            flex: 1;
+            color: #1e293b;
+            font-size: 14px;
+        }
+        /* 狀態標籤 */
+        .badge {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        /* 毛玻璃頂欄 */
+        .glass-header {
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(12px);
+        }
     </style>
 </head>
 <body>
-    <iframe src="sidebar.html" class="sidebar-iframe"></iframe>
+    <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
 
-    <div class="main-content">
-        <header class="bg-white shadow-sm px-6 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-lg p-1 rounded hover:bg-gray-100">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <h2 class="text-gray-800 font-semibold">項目詳情</h2>
-                </div>
-                <div class="space-x-2">
-                    <a id="editProjectLink" class="bg-gray-600 text-white px-3 py-1 rounded text-sm">
-                        編輯項目
-                    </a>
-                    <a id="addPhaseBtn" class="bg-primary text-white px-3 py-1 rounded text-sm">
-                        新增階段
-                    </a>
-                </div>
+    <div class="main-content min-h-screen">
+        <!-- 頂部毛玻璃導航 -->
+        <header class="glass-header sticky top-0 z-40 shadow-sm px-6 py-5">
+            <div class="flex items-center gap-4">
+                <button id="toggleSidebar" class="text-gray-600 hover:text-primary text-xl p-2 rounded-xl hover:bg-primary/5 transition-all">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-xl font-bold text-gray-800">項目詳情 Dashboard</h2>
             </div>
         </header>
 
-        <main class="p-6">
-            <div class="max-w-5xl mx-auto">
-                <!-- 項目基本資訊 -->
-                <div class="bg-white rounded-xl shadow p-6 mb-6">
-                    <div class="text-2xl font-bold text-primary mb-4" id="projectTitle"></div>
-                    <div class="grid md:grid-cols-2 gap-4 text-sm">
-                        <div><span class="text-gray-500">描述：</span><span id="projectDesc"></span></div>
-                        <div><span class="text-gray-500">狀態：</span><span id="projectStatus"></span></div>
-                        <div><span class="text-gray-500">項目經理：</span><span id="projectManager"></span></div>
-                        <div><span class="text-gray-500">項目負責人：</span><span id="projectOwner"></span></div>
-                        <div><span class="text-gray-500">技術支援：</span><span id="projectSupport"></span></div>
-                        <div><span class="text-gray-500">總金額：</span><span id="projectAmount"></span></div>
-                        <div><span class="text-gray-500">日期：</span><span id="projectDate"></span></div>
+        <main class="p-6 max-w-6xl mx-auto pb-12">
+            <!-- 頂部項目標題卡片 -->
+            <div class="dashboard-card mb-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800" id="projectName">載入中...</h1>
+                        <p class="text-gray-500 mt-1" id="projectId">ID：載入中</p>
                     </div>
-                    <div class="mt-4">
-                        <span class="text-gray-500 block mb-1">詳細內容：</span>
-                        <p class="whitespace-pre-line bg-gray-50 p-3 rounded" id="projectDetail"></p>
+                    <div id="projectStatus" class="badge"></div>
+                </div>
+            </div>
+
+            <!-- 內容網格排版 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 左邊：基礎資訊 -->
+                <div class="dashboard-card lg:col-span-2">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fa fa-file-text-o text-primary"></i> 基礎資訊
+                    </h3>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-align-left text-primary"></i> 項目描述</span>
+                        <span class="info-value" id="projectDesc">無</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-file-text text-primary"></i> 詳細內容</span>
+                        <span class="info-value" id="projectDetailContent">無</span>
                     </div>
                 </div>
 
-                <!-- 階段列表 -->
-                <div class="bg-white rounded-xl shadow p-6">
-                    <h3 class="font-semibold mb-4">項目階段</h3>
-                    <div id="phaseList" class="space-y-2">
-                        <p class="text-gray-500 text-center py-4">暫無階段</p>
+                <!-- 右邊：資助資訊 -->
+                <div class="dashboard-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fa fa-money text-primary"></i> 政府資助
+                    </h3>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-flag text-primary"></i> 申請資助</span>
+                        <span class="info-value" id="appliedFunding">無</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-hkd text-primary"></i> 資助金額</span>
+                        <span class="info-value font-bold" id="fundingSupport">HK$ 0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-exclamation-triangle text-primary"></i> 終止因素</span>
+                        <span class="info-value whitespace-pre-line" id="terminationFactor">無</span>
                     </div>
                 </div>
+
+                <!-- 左邊：負責人團隊 -->
+                <div class="dashboard-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fa fa-users text-primary"></i> 負責團隊
+                    </h3>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-user-circle text-primary"></i> 項目經理</span>
+                        <span class="info-value" id="projectManager">無</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-user-o text-primary"></i> 項目負責人</span>
+                        <span class="info-value" id="projectOwner">無</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-wrench text-primary"></i> 技術支援</span>
+                        <span class="info-value" id="projectSupport">無</span>
+                    </div>
+                </div>
+
+                <!-- 右邊：金額 & 時間 -->
+                <div class="dashboard-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fa fa-calendar-check-o text-primary"></i> 金額 & 時間
+                    </h3>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-money text-primary"></i> 項目總金額</span>
+                        <span class="info-value font-bold" id="totalAmount">HK$ 0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-calendar text-primary"></i> 開始日期</span>
+                        <span class="info-value" id="startDate">無</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fa fa-calendar-times-o text-primary"></i> 結束日期</span>
+                        <span class="info-value" id="endDate">無</span>
+                    </div>
+                </div>
+
+                <!-- 底部：階段進度 -->
+                <div class="dashboard-card lg:col-span-3">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fa fa-tasks text-primary"></i> 階段狀態 & 進度
+                    </h3>
+                    <div id="phaseList" class="space-y-2">
+                        <p class="text-gray-400">暫無階段</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 按鈕 -->
+            <div class="flex gap-4 mt-6">
+                <a href="main.html" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition">
+                    <i class="fa fa-arrow-left mr-2"></i> 返回列表
+                </a>
+                <a id="editBtn" href="" class="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition shadow-lg shadow-primary/20">
+                    <i class="fa fa-pencil mr-2"></i> 編輯項目
+                </a>
             </div>
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
-            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
-
-            function getDateStatus(endDate) {
-                if (!endDate) return 'normal';
-                const today = new Date();
-                const end = new Date(endDate);
-                const diffTime = end - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                if (diffDays >= 3) return 'normal';
-                if (diffDays >= 0) return 'warning';
-                return 'expired';
-            }
-
+            // 獲取項目ID
             const params = new URLSearchParams(window.location.search);
             const projectId = params.get('id');
-            const projects = getProjects();
-            const project = projects.find(p => p.id === projectId);
+            if (!projectId) {
+                alert('無效的項目ID');
+                location.href = 'main.html';
+                return;
+            }
 
+            // 獲取項目數據
+            const projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+            const project = projects.find(p => p.id === projectId);
             if (!project) {
                 alert('項目不存在');
                 location.href = 'main.html';
                 return;
             }
 
-            // 填充項目資訊
-            document.getElementById('projectTitle').textContent = `${project.id} - ${project.name}`;
-            document.getElementById('editProjectLink').href = `edit_project.html?id=${projectId}`;
-            document.getElementById('addPhaseBtn').href = `create_phase.html?id=${projectId}`;
+            // 日期狀態（14天即將到期）
+            function getDateStatus(endDate) {
+                if (!endDate) return 'normal';
+                const today = new Date();
+                const end = new Date(endDate);
+                const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+                if (diffDays >= 14) return 'normal';
+                if (diffDays >= 0) return 'warning';
+                return 'expired';
+            }
+
+            // ========== 渲染所有欄位 ==========
+            document.getElementById('projectName').textContent = project.name || '未命名項目';
+            document.getElementById('projectId').textContent = `ID：${project.id}`;
             document.getElementById('projectDesc').textContent = project.description || '無';
-            document.getElementById('projectStatus').innerHTML = `<span class="status-badge ${
-                project.status==='Completed'?'bg-success/10 text-success':
-                project.status==='In Progress'?'bg-primary/10 text-primary':'bg-gray-100 text-gray-600'
-            }">${project.status}</span>`;
-            document.getElementById('projectManager').textContent = project.manager || '未設定';
-            document.getElementById('projectOwner').textContent = project.owner || '未設定';
-            document.getElementById('projectSupport').textContent = project.support || '未設定';
-            document.getElementById('projectAmount').textContent = `HK$ ${Number(project.totalAmount||0).toLocaleString()}`;
-            document.getElementById('projectDate').textContent = `${project.startDate||'未設定'} ~ ${project.endDate||'未設定'}`;
-            document.getElementById('projectDetail').textContent = project.detail || '無詳細內容';
+            document.getElementById('projectDetailContent').textContent = project.detail || '無';
+            
+            // 資助欄位
+            document.getElementById('appliedFunding').textContent = project.appliedGovernmentFunding || '無';
+            document.getElementById('fundingSupport').textContent = `HK$ ${Number(project.fundingSupportHkd || 0).toLocaleString()}`;
+            document.getElementById('terminationFactor').textContent = project.projectTerminationFactor || '無';
 
-            // 渲染階段列表
-            function renderPhases() {
-                const container = document.getElementById('phaseList');
-                if (!project.phases || project.phases.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暫無階段</p>';
-                    return;
-                }
+            // 負責人
+            document.getElementById('projectManager').textContent = project.manager || '無';
+            document.getElementById('projectOwner').textContent = project.owner || '無';
+            document.getElementById('projectSupport').textContent = project.support || '無';
 
-                container.innerHTML = project.phases.map((phase, index) => {
+            // 金額 & 時間
+            document.getElementById('totalAmount').textContent = `HK$ ${Number(project.totalAmount || 0).toLocaleString()}`;
+            document.getElementById('startDate').textContent = project.startDate || '無';
+            document.getElementById('endDate').textContent = project.endDate || '無';
+
+            // 渲染狀態
+            const statusEl = document.getElementById('projectStatus');
+            const statusMap = {
+                'Completed': { text: '已完成', class: 'bg-success/10 text-success' },
+                'In Progress': { text: '進行中', class: 'bg-primary/10 text-primary' },
+                'Planning': { text: '規劃中', class: 'bg-gray-100 text-gray-600' }
+            };
+            const status = statusMap[project.status] || statusMap['Planning'];
+            statusEl.className = `badge ${status.class}`;
+            statusEl.textContent = status.text;
+
+            // 渲染階段
+            const phaseList = document.getElementById('phaseList');
+            if (project.phases?.length) {
+                phaseList.innerHTML = project.phases.map(phase => {
                     const dateStatus = getDateStatus(phase.endDate);
-                    const statusClass = dateStatus === 'normal' ? 'phase-normal' : 
-                                       dateStatus === 'warning' ? 'phase-warning' : 'phase-expired';
-                    const statusText = dateStatus === 'normal' ? '正常' : 
-                                      dateStatus === 'warning' ? '即將到期' : '已過期';
+                    let dateBadge = '';
+                    if (phase.status === 'In Progress') {
+                        dateBadge = dateStatus === 'normal' ? '<span class="badge bg-success/10 text-success">正常</span>' :
+                                    dateStatus === 'warning' ? '<span class="badge bg-warning/10 text-warning">即將到期</span>' :
+                                    '<span class="badge bg-danger/10 text-danger">過期</span>';
+                    }
+                    const phaseBadge = phase.status === 'Completed' ? '<span class="badge bg-success/10 text-success">已完成</span>' :
+                                      phase.status === 'In Progress' ? '<span class="badge bg-primary/10 text-primary">進行中</span>' :
+                                      '<span class="badge bg-gray-100 text-gray-600">規劃中</span>';
 
                     return `
-                    <div class="border rounded p-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                        <div class="flex-1">
-                            <div class="font-medium">${phase.type}</div>
-                            <div class="text-xs text-gray-500">
-                                ${phase.manager||'未設定'} | ${phase.startDate||'未設定'} ~ ${phase.endDate||'未設定'}
-                            </div>
-                            <div class="text-xs mt-1">預算: HK$ ${Number(phase.budget||0).toLocaleString()}</div>
-                            ${phase.description ? `<div class="text-xs mt-1 text-gray-600">${phase.description}</div>` : ''}
-                        </div>
-                        <div class="flex flex-col items-end gap-1">
-                            <span class="status-badge ${statusClass}">${statusText}</span>
-                            <span class="status-badge ${
-                                phase.status==='Completed'?'bg-success/10 text-success':
-                                phase.status==='In Progress'?'bg-primary/10 text-primary':'bg-gray-100 text-gray-600'
-                            }">${phase.status}</span>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="movePhase(${index}, -1)" class="p-1 bg-gray-200 rounded"><i class="fa fa-arrow-up"></i></button>
-                            <button onclick="movePhase(${index}, 1)" class="p-1 bg-gray-200 rounded"><i class="fa fa-arrow-down"></i></button>
-                            <button onclick="deletePhase(${index})" class="p-1 text-danger"><i class="fa fa-trash"></i></button>
-                        </div>
-                    </div>
-                    `;
+                    <div class="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-gray-50">
+                        <div class="font-medium">${phase.type || '未命名階段'}</div>
+                        <div class="flex gap-2">${phaseBadge}${dateBadge}</div>
+                    </div>`;
                 }).join('');
             }
-            renderPhases();
 
-            // 移動階段
-            window.movePhase = function(index, direction) {
-                const newIndex = index + direction;
-                if (newIndex < 0 || newIndex >= project.phases.length) return;
-                
-                [project.phases[index], project.phases[newIndex]] = [project.phases[newIndex], project.phases[index]];
-                saveProjects(projects);
-                renderPhases();
-            }
+            // 編輯按鈕
+            document.getElementById('editBtn').href = `edit_project.html?id=${project.id}`;
 
-            // 刪除階段
-            window.deletePhase = function(index) {
-                if (confirm('確定刪除此階段？')) {
-                    project.phases.splice(index, 1);
-                    saveProjects(projects);
-                    renderPhases();
-                }
-            }
-
-            // Sidebar 切換
-            let isHidden = localStorage.getItem('sidebarHidden') === 'true';
-            const sidebarIframe = document.querySelector('.sidebar-iframe');
-            const mainContent = document.querySelector('.main-content');
+            // Sidebar 控制
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
+            const sidebar = document.getElementById('sidebarFrame');
+            const main = document.querySelector('.main-content');
             const toggleBtn = document.getElementById('toggleSidebar');
 
-            function toggleSidebar() {
-                isHidden = !isHidden;
-                localStorage.setItem('sidebarHidden', isHidden);
-                
-                if (isHidden) {
-                    sidebarIframe.style.width = '0';
-                    mainContent.style.marginLeft = '0';
-                } else {
-                    sidebarIframe.style.width = '260px';
-                    mainContent.style.marginLeft = '260px';
-                }
+            function updateSidebar() {
+                const w = isCollapsed ? '44px' : '260px';
+                const m = isCollapsed ? '44px' : '260px';
+                sidebar.style.width = w;
+                main.style.marginLeft = m;
             }
 
-            if (isHidden) {
-                sidebarIframe.style.width = '0';
-                mainContent.style.marginLeft = '0';
-            }
+            toggleBtn.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                updateSidebar();
+            });
 
-            toggleBtn.addEventListener('click', toggleSidebar);
+            sidebar.addEventListener('load', () => setTimeout(updateSidebar, 100));
+            updateSidebar();
         });
     </script>
 </body>
