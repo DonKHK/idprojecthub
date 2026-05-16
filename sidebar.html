@@ -83,7 +83,7 @@
             </label>
         </nav>
 
-        <!-- 開發者資訊（只顯示 E-Mail） -->
+        <!-- 開發者資訊 -->
         <div class="mt-auto p-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight opacity-70 hover:opacity-100 transition-opacity">
             開發者<br>
             <span class="font-medium">Don Kwan</span><br>
@@ -93,11 +93,49 @@
     </div>
 
     <script>
+        // ==================== 自動從 GitHub 載入最新備份 ====================
+        const BACKUP_RAW_URL = "https://raw.githubusercontent.com/DonKHK/idprojecthub/8e10924472cce9adaa37247003c97f7801295280/backup/pmis_backup.json";
+
+        async function autoLoadBackup() {
+            try {
+                const response = await fetch(BACKUP_RAW_URL + '?t=' + Date.now()); // 避免 cache
+                if (!response.ok) throw new Error('無法下載備份');
+
+                const data = await response.json();
+
+                if (data.pmis_projects) {
+                    localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
+                }
+                if (data.pmis_ideas) {
+                    localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
+                }
+
+                console.log('✅ 已自動從 GitHub 同步最新資料');
+                // 可選：顯示小提示（不會彈窗打擾）
+                showToast('✅ 已自動載入最新備份資料');
+            } catch (err) {
+                console.warn('⚠️ 自動載入備份失敗（可能是網絡問題）', err);
+            }
+        }
+
+        // 小提示框（Toast）
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#165DFF; color:white; padding:12px 24px; border-radius:9999px; box-shadow:0 10px 30px rgba(22,93,255,0.3); z-index:9999; font-size:14px; white-space:nowrap;';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2800);
+        }
+
+        // ==================== 原有功能 ====================
         window.onload = function() {
             const current = window.parent.location.pathname.split('/').pop().replace('.html','') || 'index';
             document.querySelectorAll('.sidebar-link').forEach(link => {
                 if (link.dataset.page === current) link.classList.add('active');
             });
+
+            // 自動載入備份（每次打開網站都會執行）
+            autoLoadBackup();
         };
 
         function exportFullBackup() {
