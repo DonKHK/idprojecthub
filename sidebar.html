@@ -59,7 +59,6 @@
 
             <div class="border-t border-gray-700 my-6 mx-4"></div>
 
-            <!-- Tools -->
             <a href="notes.html" target="_parent" class="sidebar-link" data-page="notes">
                 <i class="fa fa-exclamation-triangle"></i>
                 <span class="sidebar-text">需注意事項</span>
@@ -71,7 +70,6 @@
 
             <div class="border-t border-gray-700 my-6 mx-4"></div>
 
-            <!-- 備份 -->
             <button onclick="exportFullBackup()" class="sidebar-link w-full text-left">
                 <i class="fa fa-download"></i>
                 <span class="sidebar-text">全系統備份</span>
@@ -83,21 +81,40 @@
             </label>
         </nav>
 
-        <!-- 開發者資訊（只顯示 E-Mail） -->
-        <div class="mt-auto p-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight opacity-70 hover:opacity-100 transition-opacity">
+        <div class="mt-auto p-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight opacity-70">
             開發者<br>
             <span class="font-medium">Don Kwan</span><br>
-            <a href="tel:37985724" class="hover:text-slate-300 transition-colors">37985724</a><br>
-            <a href="mailto:don.kwan@asiaalliedgroup.ocm" class="hover:text-slate-300 transition-colors">E-Mail</a>
+            <a href="tel:37985724" class="hover:text-slate-300">37985724</a><br>
+            <a href="mailto:don.kwan@asiaalliedgroup.ocm" class="hover:text-slate-300">E-Mail</a>
         </div>
     </div>
 
     <script>
+        const BACKUP_URL = "https://github.com/DonKHK/idprojecthub/blob/fc0657363b89623e8b94aa280ee3894d337c9276/backup/pmis_backup.json";
+			    
+			
+        async function autoLoadBackup() {
+            try {
+                const res = await fetch(BACKUP_URL + "?t=" + Date.now());
+                if (!res.ok) return;
+                const data = await res.json();
+
+                if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
+                if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
+
+                console.log('✅ 自動載入最新備份成功');
+            } catch(e) {
+                console.log('⚠️ 自動載入失敗');
+            }
+        }
+
         window.onload = function() {
             const current = window.parent.location.pathname.split('/').pop().replace('.html','') || 'index';
             document.querySelectorAll('.sidebar-link').forEach(link => {
                 if (link.dataset.page === current) link.classList.add('active');
             });
+
+            autoLoadBackup();   // 自動載入
         };
 
         function exportFullBackup() {
@@ -124,8 +141,8 @@
                     const backup = JSON.parse(ev.target.result);
                     if (backup.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(backup.pmis_projects));
                     if (backup.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(backup.pmis_ideas));
-                    alert('✅ 匯入成功！頁面即將重新載入'); location.reload();
-                } catch(err) { alert('❌ 匯入失敗！檔案格式錯誤'); }
+                    alert('✅ 匯入成功！頁面重新載入'); location.reload();
+                } catch(err) { alert('❌ 匯入失敗！'); }
             };
             reader.readAsText(file);
         }
