@@ -3,183 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新增項目 | PMIS_Don V2.5</title>
+    <title>新增項目 | I&D Project Hub v1.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF'
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
     </script>
     <style>
-        body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { 
-            width: 44px; 
-            height: 100vh; 
-            border: none; 
-            position: fixed; 
-            transition: all 0.4s ease; 
-            z-index: 10;
-        }
-        .main-content { 
-            margin-left: 44px; 
-            transition: all 0.4s ease; 
-        }
+        body { background: #f8fafc; margin: 0; }
+        .sidebar-iframe { width: 54px; height: 100vh; border: none; position: fixed; transition: all 0.4s ease; z-index: 50; }
+        .main-content { margin-left: 54px; transition: all 0.4s ease; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
     </style>
 </head>
 <body>
     <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
 
-    <div class="main-content">
-        <header class="bg-white shadow-sm px-6 py-4">
-            <div class="flex items-center">
-                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-xl p-2 rounded hover:bg-gray-100">
+    <div class="main-content min-h-screen">
+        <header class="bg-white shadow-sm px-8 py-3 sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                     <i class="fa fa-bars"></i>
                 </button>
-                <h2 class="text-gray-800 font-semibold">新增項目</h2>
+                <h2 class="text-3xl font-bold text-slate-900">新增項目</h2>
             </div>
         </header>
 
-        <main class="p-6">
-            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
-                <form id="createForm" class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
+        <main class="p-8 max-w-4xl mx-auto">
+            <div class="card p-8">
+                <form id="createForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project ID（自動生成）</label>
-                            <input id="pid" readonly class="w-full border rounded p-2 bg-gray-100">
+                            <label class="block text-sm font-medium mb-2">Project ID（自動生成）</label>
+                            <input id="pid" readonly class="w-full border border-slate-300 rounded-2xl p-4 bg-slate-100 font-mono text-lg">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project Name *</label>
-                            <input name="name" required class="w-full border rounded p-2">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium mb-1">Description（簡短描述）</label>
-                            <input name="desc" class="w-full border rounded p-2">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium mb-1">Detail（詳細內容）</label>
-                            <textarea name="detail" rows="3" class="w-full border rounded p-2"></textarea>
+                            <label class="block text-sm font-medium mb-2">Project Name *</label>
+                            <input name="name" required class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
 
-                        <!-- ========== 新增 Funding 相關欄位 ========== -->
-                        <div>
-                            <label class="block text-sm font-medium mb-1">已申請的政府 FUNDING</label>
-                            <input name="appliedFunding" class="w-full border rounded p-2">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">FUNDING SUPPORT HKD</label>
-                            <input name="fundingSupport" type="number" value="0" class="w-full border rounded p-2">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-2">Description（簡短描述）</label>
+                            <input name="desc" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium mb-1">Project termination factor（項目終止因素）</label>
-                            <textarea name="terminationFactor" rows="2" class="w-full border rounded p-2"></textarea>
+                            <label class="block text-sm font-medium mb-2">Detail（詳細內容）</label>
+                            <textarea name="detail" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea>
+                        </div>
+
+                        <!-- 政府資助欄位 -->
+                        <div class="md:col-span-2 border-t pt-6">
+                            <h3 class="font-semibold mb-4">政府資助資訊</h3>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">已申請的政府 FUNDING</label>
+                            <input name="appliedFunding" class="w-full border border-slate-300 rounded-2xl p-4">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">FUNDING SUPPORT HKD</label>
+                            <input name="fundingSupport" type="number" value="0" class="w-full border border-slate-300 rounded-2xl p-4">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-2">Project termination factor（項目終止因素）</label>
+                            <textarea name="terminationFactor" rows="2" class="w-full border border-slate-300 rounded-3xl p-4"></textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">Technical Support</label>
-                            <input name="support" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Technical Support</label>
+                            <input name="support" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project Manager</label>
-                            <input name="manager" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Project Manager</label>
+                            <input name="manager" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project Owner</label>
-                            <input name="owner" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Project Owner</label>
+                            <input name="owner" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Total Amount (HKD)</label>
-                            <input name="amount" type="number" value="0" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Total Amount (HKD)</label>
+                            <input name="amount" type="number" value="0" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Start Date</label>
-                            <input name="start" type="date" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Start Date</label>
+                            <input name="start" type="date" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">End Date</label>
-                            <input name="end" type="date" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">End Date</label>
+                            <input name="end" type="date" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Status</label>
-                            <select name="status" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Status</label>
+                            <select name="status" class="w-full border border-slate-300 rounded-2xl p-4">
                                 <option>Planning</option>
                                 <option>In Progress</option>
                                 <option>Completed</option>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg">儲存項目</button>
+
+                    <div class="flex justify-end gap-4 pt-6">
+                        <a href="main.html" class="px-8 py-4 border border-slate-300 rounded-2xl hover:bg-slate-100">取消</a>
+                        <button type="submit" class="px-8 py-4 bg-primary text-white rounded-2xl hover:bg-primary/90">儲存項目</button>
+                    </div>
                 </form>
             </div>
         </main>
     </div>
 
     <script>
+        // 【加強版】Project ID 生成 - 徹底避免重複
+        function generateProjectId() {
+            const now = new Date();
+            const yy = now.getFullYear().toString().slice(2);
+            const mm = (now.getMonth() + 1).toString().padStart(2, '0');
+            const prefix = yy + mm;
+
+            let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+            
+            // 找出所有以當前 YYMM 開頭的 ID
+            const existing = projects
+                .filter(p => p.id && p.id.startsWith(prefix))
+                .map(p => parseInt(p.id.slice(4), 10))
+                .filter(n => !isNaN(n));
+
+            const maxSeq = existing.length > 0 ? Math.max(...existing) : 0;
+            const nextSeq = (maxSeq + 1).toString().padStart(2, '0');
+
+            return prefix + nextSeq;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
-            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
+            // 自動填入最新 ID
+            document.getElementById('pid').value = generateProjectId();
 
-            function generateId() {
-                const now = new Date();
-                const yy = now.getFullYear().toString().slice(2);
-                const mm = (now.getMonth()+1).toString().padStart(2,'0');
-                const prefix = yy+mm;
-                const list = getProjects().filter(x=>x.id && x.id.startsWith(prefix));
-                const seq = (list.length+1).toString().padStart(2,'0');
-                return prefix+seq;
-            }
-
-            document.getElementById('pid').value = generateId();
-
-            document.getElementById('createForm').addEventListener('submit', e => {
+            document.getElementById('createForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const fd = new FormData(e.target);
+                const fd = new FormData(this);
+
                 const project = {
                     id: document.getElementById('pid').value,
                     name: fd.get('name'),
                     description: fd.get('desc'),
                     detail: fd.get('detail'),
-                    // 新增3個欄位數據
                     appliedGovernmentFunding: fd.get('appliedFunding') || '',
                     fundingSupportHkd: Number(fd.get('fundingSupport') || 0),
                     projectTerminationFactor: fd.get('terminationFactor') || '',
-                    // 原有欄位
                     support: fd.get('support'),
                     manager: fd.get('manager'),
                     owner: fd.get('owner'),
-                    totalAmount: Number(fd.get('amount')||0),
+                    totalAmount: Number(fd.get('amount') || 0),
                     startDate: fd.get('start'),
                     endDate: fd.get('end'),
                     status: fd.get('status'),
-                    phases: []
+                    phases: [],
+                    createdDate: new Date().toISOString()
                 };
-                const list = getProjects();
-                list.push(project);
-                saveProjects(list);
+
+                let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+                projects.push(project);
+                localStorage.setItem('pmis_projects', JSON.stringify(projects));
+
+                alert(`✅ 項目新增成功！\nProject ID：${project.id}`);
                 location.href = 'main.html';
             });
 
             // Sidebar 控制
-            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'true';
-            const sidebarIframe = document.getElementById('sidebarFrame');
+            const sidebar = document.getElementById('sidebarFrame');
             const mainContent = document.querySelector('.main-content');
             const toggleBtn = document.getElementById('toggleSidebar');
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
 
             function updateSidebar() {
-                const w = isCollapsed ? '44px' : '260px';
-                const m = isCollapsed ? '44px' : '260px';
-                sidebarIframe.style.width = w;
+                const w = isCollapsed ? '54px' : '260px';
+                const m = isCollapsed ? '54px' : '260px';
+                sidebar.style.width = w;
                 mainContent.style.marginLeft = m;
-                try {
-                    const doc = sidebarIframe.contentWindow.document.documentElement;
-                    if (doc) isCollapsed ? doc.classList.add('sidebar-collapsed') : doc.classList.remove('sidebar-collapsed');
-                } catch(e){}
             }
 
             toggleBtn.addEventListener('click', () => {
@@ -188,7 +187,7 @@
                 updateSidebar();
             });
 
-            sidebarIframe.addEventListener('load', () => setTimeout(updateSidebar, 100));
+            sidebar.addEventListener('load', () => setTimeout(updateSidebar, 150));
             updateSidebar();
         });
     </script>

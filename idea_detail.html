@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea 申請詳情 | I&D Project Hub v1.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
+    </script>
+    <style>
+        body { background: #f8fafc; margin: 0; }
+        .sidebar-iframe { width: 54px; height: 100vh; border: none; position: fixed; transition: all 0.4s ease; z-index: 50; }
+        .main-content { margin-left: 54px; transition: all 0.4s ease; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 24px; }
+        .info-label { font-weight: 600; color: #64748b; min-width: 220px; }
+    </style>
+</head>
+<body>
+    <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
+
+    <div class="main-content min-h-screen">
+        <header class="bg-white shadow-sm px-8 py-3 sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-3xl font-bold text-slate-900">Idea 申請詳情</h2>
+            </div>
+        </header>
+
+        <main class="p-8 max-w-5xl mx-auto">
+            <div class="card">
+                <h1 id="projectTitle" class="text-4xl font-bold text-slate-900"></h1>
+                <p id="ideaId" class="text-slate-500 font-mono mt-1"></p>
+            </div>
+
+            <!-- 1. 申請人及聯絡人資料 -->
+            <div class="card mt-6">
+                <h3 class="text-lg font-bold mb-4">1. 申請人及聯絡人資料</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div class="info-item"><span class="info-label">申請人姓名</span><span id="applicantName"></span></div>
+                    <div class="info-item"><span class="info-label">所屬部門</span><span id="department"></span></div>
+                    <div class="info-item"><span class="info-label">PM 姓名</span><span id="pmName"></span></div>
+                    <div class="info-item"><span class="info-label">PM 電話</span><span id="pmPhone"></span></div>
+                    <div class="info-item"><span class="info-label">PM Email</span><span id="pmEmail"></span></div>
+                    <div class="info-item"><span class="info-label">第二聯絡人</span><span id="scName"></span></div>
+                    <div class="info-item"><span class="info-label">項目持有人</span><span id="ownerName"></span></div>
+                </div>
+            </div>
+
+            <!-- 2. 項目基本資訊 -->
+            <div class="card mt-6">
+                <h3 class="text-lg font-bold mb-4">2. 項目基本資訊</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="info-item"><span class="info-label">項目名稱</span><span id="projectTitle2"></span></div>
+                    <div class="info-item"><span class="info-label">項目類型</span><span id="projectType"></span></div>
+                    <div><span class="info-label block mb-1">項目背景及目標</span><p id="projectBackground" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">痛點描述</span><p id="painPoints" class="whitespace-pre-line"></p></div>
+                </div>
+            </div>
+
+            <!-- 3. 項目範圍與成果 -->
+            <div class="card mt-6">
+                <h3 class="text-lg font-bold mb-4">3. 項目範圍與成果</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div><span class="info-label block mb-1">項目範圍</span><p id="projectScope" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">預期交付成果</span><p id="deliverables" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">預期效益</span><p id="benefits" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">風險與挑戰</span><p id="risks" class="whitespace-pre-line"></p></div>
+                </div>
+            </div>
+
+            <!-- 4. 技術與創新 -->
+            <div class="card mt-6">
+                <h3 class="text-lg font-bold mb-4">4. 技術與創新</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="info-item"><span class="info-label">建議技術方向</span><span id="techDirection"></span></div>
+                    <div class="info-item"><span class="info-label">創新亮點</span><span id="innovation"></span></div>
+                    <div class="info-item"><span class="info-label">技術需求</span><span id="techRequirements"></span></div>
+                    <div class="info-item"><span class="info-label">是否需要申請專利</span><span id="requireIP"></span></div>
+                </div>
+            </div>
+
+            <!-- 5. 預算與資源 -->
+            <div class="card mt-6">
+                <h3 class="text-lg font-bold mb-4">5. 預算與資源</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="info-item"><span class="info-label">總預算估算</span><span id="totalBudget"></span></div>
+                    <div class="info-item"><span class="info-label">目標政府資助</span><span id="govFund"></span></div>
+                    <div class="md:col-span-2"><span class="info-label block mb-1">預算細分</span><p id="budgetBreakdown" class="whitespace-pre-line"></p></div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <a href="approved_ideas.html" class="text-primary hover:underline flex items-center justify-center gap-2">
+                    ← 返回已審批 Ideas
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const ideaId = params.get('id');
+            if (!ideaId) {
+                alert('無效的 Idea ID');
+                history.back();
+                return;
+            }
+
+            const ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
+            const idea = ideas.find(i => i.id === ideaId);
+
+            if (!idea) {
+                alert('找不到此 Idea 申請');
+                history.back();
+                return;
+            }
+
+            // 填入資料
+            document.getElementById('projectTitle').textContent = idea.projectTitle || '未命名 Idea';
+            document.getElementById('ideaId').textContent = idea.id;
+            document.getElementById('applicantName').textContent = idea.applicantName || '—';
+            document.getElementById('department').textContent = idea.department || '—';
+            document.getElementById('pmName').textContent = idea.pmName || '—';
+            document.getElementById('pmPhone').textContent = idea.pmPhone || '—';
+            document.getElementById('pmEmail').textContent = idea.pmEmail || '—';
+            document.getElementById('scName').textContent = idea.scName || '—';
+            document.getElementById('ownerName').textContent = idea.ownerName || '—';
+            document.getElementById('projectTitle2').textContent = idea.projectTitle || '—';
+            document.getElementById('projectType').textContent = idea.projectType || '—';
+            document.getElementById('projectBackground').textContent = idea.projectBackground || '—';
+            document.getElementById('painPoints').textContent = idea.painPoints || '—';
+            document.getElementById('projectScope').textContent = idea.projectScope || '—';
+            document.getElementById('deliverables').textContent = idea.deliverables || '—';
+            document.getElementById('benefits').textContent = idea.benefits || '—';
+            document.getElementById('risks').textContent = idea.risks || '—';
+            document.getElementById('techDirection').textContent = idea.techDirection || '—';
+            document.getElementById('innovation').textContent = idea.innovation || '—';
+            document.getElementById('techRequirements').textContent = idea.techRequirements || '—';
+            document.getElementById('requireIP').textContent = idea.requireIP || '—';
+            document.getElementById('totalBudget').textContent = idea.totalBudget ? `HK$ ${idea.totalBudget}` : '—';
+            document.getElementById('govFund').textContent = idea.govFund || '—';
+            document.getElementById('budgetBreakdown').textContent = idea.budgetBreakdown || '—';
+
+            // Sidebar 控制
+            const sidebar = document.getElementById('sidebarFrame');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
+
+            function updateSidebar() {
+                const w = isCollapsed ? '54px' : '260px';
+                const m = isCollapsed ? '54px' : '260px';
+                sidebar.style.width = w;
+                mainContent.style.marginLeft = m;
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                isCollapsed = !isCollapsed;
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                updateSidebar();
+            });
+
+            sidebar.addEventListener('load', () => setTimeout(updateSidebar, 150));
+            updateSidebar();
+        });
+    </script>
+</body>
+</html>

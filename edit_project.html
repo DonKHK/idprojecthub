@@ -3,103 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>編輯項目 | PMIS_Don V2.5</title>
+    <title>編輯項目 | I&D Project Hub v1.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF'
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
     </script>
     <style>
-        body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { 
-            width: 44px; 
-            height: 100vh; 
-            border: none; 
-            position: fixed; 
-            transition: all 0.4s ease; 
-            z-index: 10;
-        }
-        .main-content { 
-            margin-left: 44px; 
-            transition: all 0.4s ease; 
-        }
+        body { background: #f8fafc; margin: 0; }
+        .sidebar-iframe { width: 54px; height: 100vh; border: none; position: fixed; transition: all 0.4s ease; z-index: 50; }
+        .main-content { margin-left: 54px; transition: all 0.4s ease; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
     </style>
 </head>
 <body>
     <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
 
-    <div class="main-content">
-        <header class="bg-white shadow-sm px-6 py-4">
-            <div class="flex items-center">
-                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-xl p-2 rounded hover:bg-gray-100">
+    <div class="main-content min-h-screen">
+        <header class="bg-white shadow-sm px-8 py-3 sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                     <i class="fa fa-bars"></i>
                 </button>
-                <h2 class="text-gray-800 font-semibold">編輯項目</h2>
+                <h2 class="text-3xl font-bold text-slate-900">編輯項目</h2>
             </div>
         </header>
 
-        <main class="p-6">
-            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
-                <form id="editForm" class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
+        <main class="p-8 max-w-4xl mx-auto">
+            <div class="card p-8">
+                <form id="editForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project ID</label>
-                            <input name="id" readonly class="w-full border rounded p-2 bg-gray-100">
+                            <label class="block text-sm font-medium mb-2">Project ID</label>
+                            <input name="id" readonly class="w-full border border-slate-300 rounded-2xl p-4 bg-slate-100 font-mono text-lg">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project Name</label>
-                            <input name="name" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Project Name *</label>
+                            <input name="name" required class="w-full border border-slate-300 rounded-2xl p-4">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-2">Description（簡短描述）</label>
+                            <input name="desc" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium mb-1">Description</label>
-                            <input name="desc" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Detail（詳細內容）</label>
+                            <textarea name="detail" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea>
+                        </div>
+
+                        <!-- 政府資助欄位 -->
+                        <div class="md:col-span-2 border-t pt-6">
+                            <h3 class="font-semibold mb-4">政府資助資訊</h3>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">已申請的政府 FUNDING</label>
+                            <input name="appliedFunding" class="w-full border border-slate-300 rounded-2xl p-4">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">FUNDING SUPPORT HKD</label>
+                            <input name="fundingSupport" type="number" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium mb-1">Detail</label>
-                            <textarea name="detail" rows="3" class="w-full border rounded p-2"></textarea>
+                            <label class="block text-sm font-medium mb-2">Project termination factor</label>
+                            <textarea name="terminationFactor" rows="2" class="w-full border border-slate-300 rounded-3xl p-4"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Technical Support</label>
+                            <input name="support" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Technical Support</label>
-                            <input name="support" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Project Manager</label>
+                            <input name="manager" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project Manager</label>
-                            <input name="manager" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Project Owner</label>
+                            <input name="owner" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Project Owner</label>
-                            <input name="owner" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Total Amount (HKD)</label>
+                            <input name="amount" type="number" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Total Amount (HKD)</label>
-                            <input name="amount" type="number" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">Start Date</label>
+                            <input name="start" type="date" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Start Date</label>
-                            <input name="start" type="date" class="w-full border rounded p-2">
+                            <label class="block text-sm font-medium mb-2">End Date</label>
+                            <input name="end" type="date" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">End Date</label>
-                            <input name="end" type="date" class="w-full border rounded p-2">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Status</label>
-                            <select name="status" class="w-full border rounded p-2">
-                                <option>Planning</option>
-                                <option>In Progress</option>
-                                <option>Completed</option>
+                            <label class="block text-sm font-medium mb-2">Status</label>
+                            <select name="status" class="w-full border border-slate-300 rounded-2xl p-4">
+                                <option value="Planning">Planning</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg">更新項目</button>
+
+                    <div class="flex justify-end gap-4 pt-6">
+                        <a id="cancelBtn" class="px-8 py-4 border border-slate-300 rounded-2xl hover:bg-slate-100">取消</a>
+                        <button type="submit" class="px-8 py-4 bg-primary text-white rounded-2xl hover:bg-primary/90">更新項目</button>
+                    </div>
                 </form>
             </div>
         </main>
@@ -107,66 +113,79 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            function getProjects(){return JSON.parse(localStorage.getItem('pmis_projects'))||[];}
-            function saveProjects(arr){localStorage.setItem('pmis_projects',JSON.stringify(arr));}
-
             const params = new URLSearchParams(window.location.search);
             const projectId = params.get('id');
-            const projects = getProjects();
-            const project = projects.find(p => p.id === projectId);
-
-            if (!project) {
-                alert('項目不存在');
+            if (!projectId) {
+                alert('缺少項目 ID');
                 location.href = 'main.html';
                 return;
             }
 
-            document.querySelector('[name=id]').value = project.id;
-            document.querySelector('[name=name]').value = project.name;
-            document.querySelector('[name=desc]').value = project.description || '';
-            document.querySelector('[name=detail]').value = project.detail || '';
-            document.querySelector('[name=support]').value = project.support || '';
-            document.querySelector('[name=manager]').value = project.manager || '';
-            document.querySelector('[name=owner]').value = project.owner || '';
-            document.querySelector('[name=amount]').value = project.totalAmount || 0;
-            document.querySelector('[name=start]').value = project.startDate || '';
-            document.querySelector('[name=end]').value = project.endDate || '';
-            document.querySelector('[name=status]').value = project.status;
+            let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+            let project = projects.find(p => p.id === projectId);
 
-            document.getElementById('editForm').addEventListener('submit', e => {
+            if (!project) {
+                alert('找不到此項目！');
+                location.href = 'main.html';
+                return;
+            }
+
+            // 填入資料
+            document.querySelector('[name="id"]').value = project.id || '';
+            document.querySelector('[name="name"]').value = project.name || '';
+            document.querySelector('[name="desc"]').value = project.description || '';
+            document.querySelector('[name="detail"]').value = project.detail || '';
+            document.querySelector('[name="support"]').value = project.support || '';
+            document.querySelector('[name="manager"]').value = project.manager || '';
+            document.querySelector('[name="owner"]').value = project.owner || '';
+            document.querySelector('[name="amount"]').value = project.totalAmount || 0;
+            document.querySelector('[name="start"]').value = project.startDate || '';
+            document.querySelector('[name="end"]').value = project.endDate || '';
+            document.querySelector('[name="status"]').value = project.status || 'Planning';
+
+            // 政府資助欄位
+            document.querySelector('[name="appliedFunding"]').value = project.appliedGovernmentFunding || '';
+            document.querySelector('[name="fundingSupport"]').value = project.fundingSupportHkd || 0;
+            document.querySelector('[name="terminationFactor"]').value = project.projectTerminationFactor || '';
+
+            document.getElementById('cancelBtn').href = `detail_project.html?id=${projectId}`;
+
+            // 提交更新
+            document.getElementById('editForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const fd = new FormData(e.target);
-                
+                const fd = new FormData(this);
+
                 project.name = fd.get('name');
                 project.description = fd.get('desc');
                 project.detail = fd.get('detail');
                 project.support = fd.get('support');
                 project.manager = fd.get('manager');
                 project.owner = fd.get('owner');
-                project.totalAmount = Number(fd.get('amount')||0);
+                project.totalAmount = Number(fd.get('amount') || 0);
                 project.startDate = fd.get('start');
                 project.endDate = fd.get('end');
                 project.status = fd.get('status');
-                
-                saveProjects(projects);
+
+                project.appliedGovernmentFunding = fd.get('appliedFunding') || '';
+                project.fundingSupportHkd = Number(fd.get('fundingSupport') || 0);
+                project.projectTerminationFactor = fd.get('terminationFactor') || '';
+
+                localStorage.setItem('pmis_projects', JSON.stringify(projects));
+                alert('✅ 項目更新成功！');
                 location.href = `detail_project.html?id=${projectId}`;
             });
 
             // Sidebar 控制
-            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'true';
-            const sidebarIframe = document.getElementById('sidebarFrame');
+            const sidebar = document.getElementById('sidebarFrame');
             const mainContent = document.querySelector('.main-content');
             const toggleBtn = document.getElementById('toggleSidebar');
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
 
             function updateSidebar() {
-                const w = isCollapsed ? '44px' : '260px';
-                const m = isCollapsed ? '44px' : '260px';
-                sidebarIframe.style.width = w;
+                const w = isCollapsed ? '54px' : '260px';
+                const m = isCollapsed ? '54px' : '260px';
+                sidebar.style.width = w;
                 mainContent.style.marginLeft = m;
-                try {
-                    const doc = sidebarIframe.contentWindow.document.documentElement;
-                    if (doc) isCollapsed ? doc.classList.add('sidebar-collapsed') : doc.classList.remove('sidebar-collapsed');
-                } catch(e){}
             }
 
             toggleBtn.addEventListener('click', () => {
@@ -175,7 +194,7 @@
                 updateSidebar();
             });
 
-            sidebarIframe.addEventListener('load', () => setTimeout(updateSidebar, 100));
+            sidebar.addEventListener('load', () => setTimeout(updateSidebar, 150));
             updateSidebar();
         });
     </script>

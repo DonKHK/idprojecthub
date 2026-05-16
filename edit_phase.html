@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新增階段 | I&D Project Hub v1.1</title>
+    <title>編輯階段 | I&D Project Hub v1.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
@@ -26,13 +26,13 @@
                 <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                     <i class="fa fa-bars"></i>
                 </button>
-                <h2 class="text-3xl font-bold text-slate-900">新增階段</h2>
+                <h2 class="text-3xl font-bold text-slate-900">編輯階段</h2>
             </div>
         </header>
 
         <main class="p-8 max-w-2xl mx-auto">
             <div class="card p-8">
-                <form id="phaseForm" class="space-y-6">
+                <form id="editPhaseForm" class="space-y-6">
                     <div>
                         <label class="block text-sm font-medium mb-2">階段類型 *</label>
                         <select name="type" required class="w-full border border-slate-300 rounded-2xl p-4 focus:border-primary focus:outline-none">
@@ -62,11 +62,11 @@
                     <div class="grid grid-cols-3 gap-6">
                         <div>
                             <label class="block text-sm font-medium mb-2">預算 (HKD)</label>
-                            <input name="budget" type="number" value="0" class="w-full border border-slate-300 rounded-2xl p-4">
+                            <input name="budget" type="number" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">已使用金額 (HKD)</label>
-                            <input name="usedAmount" type="number" value="0" class="w-full border border-slate-300 rounded-2xl p-4">
+                            <input name="usedAmount" type="number" class="w-full border border-slate-300 rounded-2xl p-4">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">階段狀態</label>
@@ -78,12 +78,10 @@
                         </div>
                     </div>
 
-                    <!-- 健康度預覽（紅黃綠 + 原因） -->
+                    <!-- 健康度即時預覽 -->
                     <div id="healthPreview" class="hidden p-5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-4">
                         <div id="previewDot" class="health-dot"></div>
-                        <div>
-                            <span id="previewLabel" class="font-semibold text-slate-700 text-lg"></span>
-                        </div>
+                        <span id="previewLabel" class="font-semibold text-slate-700 text-lg"></span>
                     </div>
 
                     <div>
@@ -92,8 +90,8 @@
                     </div>
 
                     <div class="flex justify-end gap-4 pt-4">
-                        <button type="button" onclick="history.back()" class="px-8 py-4 border border-slate-300 rounded-2xl hover:bg-slate-100">取消</button>
-                        <button type="submit" class="px-8 py-4 bg-primary text-white rounded-2xl hover:bg-primary/90">儲存階段</button>
+                        <a id="cancelBtn" class="px-8 py-4 border border-slate-300 rounded-2xl hover:bg-slate-100">取消</a>
+                        <button type="submit" class="px-8 py-4 bg-primary text-white rounded-2xl hover:bg-primary/90">更新階段</button>
                     </div>
                 </form>
             </div>
@@ -101,7 +99,7 @@
     </div>
 
     <script>
-        // 即時顯示健康度 + 原因
+        // 即時健康度預覽（紅黃綠 + 原因）
         function previewHealth() {
             const endDate = document.getElementById('endDateInput').value;
             const status = document.getElementById('statusSelect').value;
@@ -146,31 +144,50 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams(window.location.search);
-            const projectId = params.get('id');
+            const projectId = params.get('projectId');
+            const phaseId = params.get('phaseId');
 
-            document.getElementById('phaseForm').addEventListener('submit', function(e) {
+            let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+            let project = projects.find(p => p.id === projectId);
+            if (!project || !project.phases) {
+                alert('找不到項目');
+                history.back();
+                return;
+            }
+
+            let phase = project.phases.find(ph => String(ph.id) === String(phaseId));
+            if (!phase) {
+                alert('找不到該階段');
+                history.back();
+                return;
+            }
+
+            // 填入原有資料
+            document.querySelector('[name="type"]').value = phase.type || 'Others';
+            document.querySelector('[name="startDate"]').value = phase.startDate || '';
+            document.querySelector('[name="endDate"]').value = phase.endDate || '';
+            document.querySelector('[name="budget"]').value = phase.budget || 0;
+            document.querySelector('[name="usedAmount"]').value = phase.usedAmount || 0;
+            document.querySelector('[name="status"]').value = phase.status || 'Planning';
+            document.querySelector('[name="description"]').value = phase.description || '';
+
+            document.getElementById('cancelBtn').href = `detail_project.html?id=${projectId}`;
+
+            // 提交更新
+            document.getElementById('editPhaseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const fd = new FormData(this);
 
-                let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
-                const project = projects.find(p => p.id === projectId);
-                if (!project) return alert('項目不存在');
-
-                if (!project.phases) project.phases = [];
-
-                project.phases.push({
-                    id: Date.now().toString(),
-                    type: fd.get('type'),
-                    startDate: fd.get('startDate'),
-                    endDate: fd.get('endDate'),
-                    budget: Number(fd.get('budget') || 0),
-                    usedAmount: Number(fd.get('usedAmount') || 0),
-                    status: fd.get('status'),
-                    description: fd.get('description')
-                });
+                phase.type = fd.get('type');
+                phase.startDate = fd.get('startDate');
+                phase.endDate = fd.get('endDate');
+                phase.budget = Number(fd.get('budget') || 0);
+                phase.usedAmount = Number(fd.get('usedAmount') || 0);
+                phase.status = fd.get('status');
+                phase.description = fd.get('description');
 
                 localStorage.setItem('pmis_projects', JSON.stringify(projects));
-                alert('✅ 階段已成功新增！');
+                alert('✅ 階段更新成功！');
                 location.href = `detail_project.html?id=${projectId}`;
             });
 

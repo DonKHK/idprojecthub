@@ -3,122 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政府 Funding | PMIS_Don V2.5</title>
+    <title>政府 Funding 資訊 | I&D Project Hub v1.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        success: '#00B42A'
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
     </script>
     <style>
-        body { background-color: #F8FAFC; margin: 0; }
-        .sidebar-iframe { 
-            width: 44px; 
-            height: 100vh; 
-            border: none; 
-            position: fixed; 
-            transition: all 0.4s ease; 
-            z-index: 10;
-        }
-        .main-content { 
-            margin-left: 44px; 
-            transition: all 0.4s ease; 
-        }
+        body { background: #f8fafc; margin: 0; }
+        .sidebar-iframe { width: 54px; height: 100vh; border: none; position: fixed; transition: all 0.4s ease; z-index: 50; }
+        .main-content { margin-left: 54px; transition: all 0.4s ease; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(22,93,255,0.15); }
     </style>
 </head>
 <body>
     <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
 
-    <div class="main-content">
-        <header class="bg-white shadow-sm px-6 py-4">
-            <div class="flex items-center">
-                <button id="toggleSidebar" class="mr-4 text-gray-500 hover:text-gray-800 text-xl p-2 rounded hover:bg-gray-100">
+    <div class="main-content min-h-screen">
+        <header class="bg-white shadow-sm px-8 py-3 sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                     <i class="fa fa-bars"></i>
                 </button>
-                <h2 class="text-gray-800 font-semibold">政府 Funding 資訊</h2>
+                <h2 class="text-3xl font-bold text-slate-900">政府 Funding 資訊</h2>
             </div>
         </header>
-        <main class="p-6">
-            <div class="max-w-4xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="bg-white rounded-xl shadow p-5">
-                        <h3 class="font-semibold text-lg mb-2">創新科技署資助計劃</h3>
-                        <p class="text-gray-600 text-sm mb-3">資助本地企業進行研發及創新活動</p>
-                        <div class="text-sm space-y-1">
-                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 1000萬</div>
-                            <div><span class="text-gray-500">資助比例：</span>最高 90%</div>
-                            <div><span class="text-gray-500">申請截止：</span>全年接受申請</div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow p-5">
-                        <h3 class="font-semibold text-lg mb-2">BUD 專項基金</h3>
-                        <p class="text-gray-600 text-sm mb-3">協助企業發展品牌、升級轉型及拓展內銷市場</p>
-                        <div class="text-sm space-y-1">
-                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 700萬</div>
-                            <div><span class="text-gray-500">資助比例：</span>最高 50%</div>
-                            <div><span class="text-gray-500">申請截止：</span>全年接受申請</div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow p-5">
-                        <h3 class="font-semibold text-lg mb-2">科技券計劃</h3>
-                        <p class="text-gray-600 text-sm mb-3">資助本地中小企業使用科技服務和方案</p>
-                        <div class="text-sm space-y-1">
-                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 60萬</div>
-                            <div><span class="text-gray-500">資助比例：</span>最高 75%</div>
-                            <div><span class="text-gray-500">申請截止：</span>全年接受申請</div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow p-5">
-                        <h3 class="font-semibold text-lg mb-2">數碼轉型支援先導計劃</h3>
-                        <p class="text-gray-600 text-sm mb-3">協助中小企業進行數碼轉型</p>
-                        <div class="text-sm space-y-1">
-                            <div><span class="text-gray-500">資助額：</span>最高 HK$ 15萬</div>
-                            <div><span class="text-gray-500">資助比例：</span>最高 90%</div>
-                            <div><span class="text-gray-500">申請截止：</span>2026年12月31日</div>
-                        </div>
+
+        <main class="p-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- 原有 4 個保持不變 -->
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">創新科技署資助計劃</h3>
+                    <p class="text-slate-600 mb-4">資助本地企業進行研發及創新活動</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$ 1,000萬</div>
+                        <div><span class="text-slate-500">資助比例：</span>最高 90%</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年接受申請</div>
                     </div>
                 </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">BUD 專項基金</h3>
+                    <p class="text-slate-600 mb-4">協助企業發展品牌、升級轉型及拓展內銷市場</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$ 700萬</div>
+                        <div><span class="text-slate-500">資助比例：</span>最高 50%</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年接受申請</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">科技券計劃</h3>
+                    <p class="text-slate-600 mb-4">資助本地中小企業使用科技服務和方案</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$ 60萬</div>
+                        <div><span class="text-slate-500">資助比例：</span>最高 75%</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年接受申請</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">數碼轉型支援先導計劃</h3>
+                    <p class="text-slate-600 mb-4">協助中小企業進行數碼轉型</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$ 15萬</div>
+                        <div><span class="text-slate-500">資助比例：</span>最高 90%</div>
+                        <div><span class="text-slate-500">申請截止：</span>2026年12月31日</div>
+                    </div>
+                </div>
+
+                <!-- 新增 20+ 個與亞洲聯合基建高度相關的 Funding -->
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">建造業創新及科技基金 (CITF)</h3>
+                    <p class="text-slate-600 mb-4">政府 + CIC 最新注資 14 億，支援基建公司採用 BIM、MiC、機械人、智慧工地等科技</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高數百萬（視項目）</div>
+                        <div><span class="text-slate-500">資助比例：</span>最高 70-80%</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年接受申請</div>
+         
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">CITF - BIM 應用資助</h3>
+                    <p class="text-slate-600 mb-4">建築資訊模擬 (BIM) 系統採購、培訓及項目應用</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$200萬+</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">CITF - 組裝合成建築法 (MiC)</h3>
+                    <p class="text-slate-600 mb-4">模組化建築、MiC 模塊、機電裝備合成法 (MiMEP)</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高數百萬</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">CITF - 創新建築科技 (ACT)</h3>
+                    <p class="text-slate-600 mb-4">建築機械人、自動化設備、先驅應用項目</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$200萬（安全科技加碼）</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">CITF - 預製鋼筋 (STB) 資助</h3>
+                    <p class="text-slate-600 mb-4">預製鋼筋加工及工業化流程</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">申請截止：</span>全年</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">Green Tech Fund (GTF)</h3>
+                    <p class="text-slate-600 mb-4">綠色建築、減碳技術、能源節約、廢物減量（極適合基建項目）</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>HK$250萬 – 3,000萬</div>
+                        <div><span class="text-slate-500">總額：</span>HK$4 億</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年接受申請</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">創新及科技支援計劃 (ITSP)</h3>
+                    <p class="text-slate-600 mb-4">研發中心或企業的創新科技項目</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">資助額：</span>最高 HK$1,400萬</div>
+                        <div><span class="text-slate-500">申請截止：</span>全年</div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-3">CIC 建造業專業學位課程畢業生在職培訓津貼計劃</h3>
+                    <p class="text-slate-600 mb-4">資助畢業生在職培訓（最新 2026/27 再出資 1.8 億）</p>
+                    <div class="text-sm space-y-2">
+                        <div><span class="text-slate-500">每名學員最高：</span>HK$9 萬</div>
+                    </div>
+                </div>
+
+                <!-- 再多 12 個簡要卡片（可繼續擴展） -->
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">CITF - 安全智慧工地系統</h3><p class="text-slate-600">AI 監測、安全科技（資助額已加碼）</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">CITF - BIM 培訓及項目指導</h3><p class="text-slate-600">課堂培訓 + 項目式輔導</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">回收基金 - 建築廢料處理設備</h3><p class="text-slate-600">循環經濟、廢物減量設備</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">企業支援計劃 (ESS)</h3><p class="text-slate-600">創新科技企業研發資助</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">Smart Traffic Fund</h3><p class="text-slate-600">智慧交通及基建科技</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">發展局 - 在職培訓津貼先導計劃</h3><p class="text-slate-600">兼讀學位 + 在職培訓</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">建築科技研究院研究資助</h3><p class="text-slate-600">2026 年新成立（HK$1 億）</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">CIC 研究及技術發展基金</h3><p class="text-slate-600">綠色建築、生產力、安全研究</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">內地與香港科技合作資助計劃</h3><p class="text-slate-600">大灣區基建科技合作</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">Operation Building Bright 2.0</h3><p class="text-slate-600">樓宇維修及綠色改造資助</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">裝修維修及建造業中小企安全設備資助</h3><p class="text-slate-600">高空作業安全設備</p></div>
+                <div class="card p-8"><h3 class="font-semibold text-xl mb-3">中小型企業輕便手工具掛繩資助</h3><p class="text-slate-600">工地安全提升</p></div>
+
             </div>
+
+            <p class="text-center text-slate-500 mt-12 text-sm">資料截至 2026 年 5 月 • 建議直接到官網確認最新詳情及申請資格</p>
         </main>
     </div>
 
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar 控制
-            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'true';
-            const sidebarIframe = document.getElementById('sidebarFrame');
-            const mainContent = document.querySelector('.main-content');
-            const toggleBtn = document.getElementById('toggleSidebar');
+        // Sidebar 控制（與其他頁面一致）
+        const sidebar = document.getElementById('sidebarFrame');
+        const mainContent = document.querySelector('.main-content');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
 
-            function updateSidebar() {
-                const w = isCollapsed ? '44px' : '260px';
-                const m = isCollapsed ? '44px' : '260px';
-                sidebarIframe.style.width = w;
-                mainContent.style.marginLeft = m;
-                try {
-                    const doc = sidebarIframe.contentWindow.document.documentElement;
-                    if (doc) isCollapsed ? doc.classList.add('sidebar-collapsed') : doc.classList.remove('sidebar-collapsed');
-                } catch(e){}
-            }
+        function updateSidebar() {
+            const w = isCollapsed ? '54px' : '260px';
+            const m = isCollapsed ? '54px' : '260px';
+            sidebar.style.width = w;
+            mainContent.style.marginLeft = m;
+        }
 
-            toggleBtn.addEventListener('click', () => {
-                isCollapsed = !isCollapsed;
-                localStorage.setItem('sidebarCollapsed', isCollapsed);
-                updateSidebar();
-            });
-
-            sidebarIframe.addEventListener('load', () => setTimeout(updateSidebar, 100));
+        toggleBtn.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
             updateSidebar();
         });
+
+        sidebar.addEventListener('load', () => setTimeout(updateSidebar, 150));
+        updateSidebar();
     </script>
 </body>
 </html>

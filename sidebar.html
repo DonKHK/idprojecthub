@@ -5,117 +5,129 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF'
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
     </script>
     <style>
-        body { 
-            margin: 0; 
-            background-color: #1E293B; 
-            height: 100vh; 
-            overflow-x: hidden; 
-        }
-        
+        body { margin: 0; height: 100vh; overflow-x: hidden; background-color: #1E293B; }
         .sidebar-link { 
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            color: #E6ECF7;
-            transition: all 0.3s;
-            margin: 2px 8px;
-            border-radius: 6px;
+            display: flex; align-items: center; padding: 14px 16px;
+            color: #E6ECF7; transition: all 0.3s; margin: 2px 8px; border-radius: 8px;
         }
-        .sidebar-link:hover {
-            background-color: rgba(22, 93, 255, 0.2);
-            color: white;
-        }
-        .sidebar-link i {
-            width: 24px;
-            color: #E6ECF7;
-        }
-        .sidebar-link:hover i,
-        .sidebar-link.active i {
-            color: white;
-        }
-        .sidebar-link.active { 
-            background-color: rgba(22, 93, 255, 0.25);
-            color: white;
-            border-left: 4px solid #165DFF;
-        }
-
-        .sidebar-text {
-            margin-left: 12px;
-            white-space: nowrap;
-        }
-
-        /* 收窄模式 (只顯示 Icon) */
-        .sidebar-collapsed .sidebar-text {
-            display: none !important;
-        }
-        .sidebar-collapsed {
-            width: 44px !important;
-        }
-        .sidebar-collapsed .sidebar-link {
-            justify-content: center;
-            padding: 12px 0;
-        }
+        .sidebar-link:hover { background-color: rgba(22, 93, 255, 0.25); color: white; }
+        .sidebar-link i { width: 24px; }
+        .sidebar-link.active { background-color: rgba(22, 93, 255, 0.3); border-left: 4px solid #165DFF; }
+        .sidebar-text { margin-left: 12px; white-space: nowrap; }
+        .sidebar-collapsed .sidebar-text { display: none !important; }
+        .logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <div id="sidebar" class="flex flex-col h-full transition-all duration-300">
+    <div id="sidebar" class="flex flex-col h-full transition-all duration-300 bg-[#1E293B] text-white">
         <!-- Logo -->
         <div class="p-4 border-b border-gray-700 flex items-center justify-center">
-            <div class="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                P
-            </div>
+            <img src="AAI_logo.jpg" alt="AAI Logo" class="logo-img">
         </div>
-        
-        <nav class="mt-6 flex-1 space-y-1">
+
+        <nav class="mt-6 flex-1 space-y-1 px-2">
             <a href="index.html" target="_parent" class="sidebar-link" data-page="index">
-                <i class="fa fa-dashboard w-6"></i>
-                <span class="sidebar-text">Dashboard 主頁</span>
+                <i class="fa fa-dashboard"></i>
+                <span class="sidebar-text">Dashboard</span>
             </a>
             <a href="main.html" target="_parent" class="sidebar-link" data-page="main">
-                <i class="fa fa-folder-open w-6"></i>
+                <i class="fa fa-folder-open"></i>
                 <span class="sidebar-text">我的項目</span>
             </a>
             <a href="create_project.html" target="_parent" class="sidebar-link" data-page="create">
-                <i class="fa fa-plus-circle w-6"></i>
+                <i class="fa fa-plus-circle"></i>
                 <span class="sidebar-text">新增項目</span>
             </a>
-            
+
             <div class="border-t border-gray-700 my-6 mx-4"></div>
-            
+
+            <a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas">
+                <i class="fa fa-lightbulb-o"></i>
+                <span class="sidebar-text">提交項目</span>
+            </a>
+            <a href="pending_ideas.html" target="_parent" class="sidebar-link" data-page="pending">
+                <i class="fa fa-clock-o"></i>
+                <span class="sidebar-text">待審批項目</span>
+            </a>
+            <a href="approved_ideas.html" target="_parent" class="sidebar-link" data-page="approved">
+                <i class="fa fa-check-circle"></i>
+                <span class="sidebar-text">已審批項目</span>
+            </a>
+
+            <div class="border-t border-gray-700 my-6 mx-4"></div>
+
+            <!-- Tools -->
             <a href="notes.html" target="_parent" class="sidebar-link" data-page="notes">
-                <i class="fa fa-exclamation-triangle w-6"></i>
+                <i class="fa fa-exclamation-triangle"></i>
                 <span class="sidebar-text">需注意事項</span>
             </a>
-            <a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas">
-                <i class="fa fa-lightbulb-o w-6"></i>
-                <span class="sidebar-text">提供 Idea</span>
-            </a>
             <a href="funding.html" target="_parent" class="sidebar-link" data-page="funding">
-                <i class="fa fa-money w-6"></i>
-                <span class="sidebar-text">政府 Funding</span>
+                <i class="fa fa-dollar"></i>
+                <span class="sidebar-text">外界資助計劃</span>
             </a>
+
+            <div class="border-t border-gray-700 my-6 mx-4"></div>
+
+            <!-- 備份 -->
+            <button onclick="exportFullBackup()" class="sidebar-link w-full text-left">
+                <i class="fa fa-download"></i>
+                <span class="sidebar-text">全系統備份</span>
+            </button>
+            <label class="sidebar-link w-full text-left cursor-pointer">
+                <i class="fa fa-upload"></i>
+                <span class="sidebar-text">匯入備份</span>
+                <input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)">
+            </label>
         </nav>
+
+        <!-- 開發者資訊（只顯示 E-Mail） -->
+        <div class="mt-auto p-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight opacity-70 hover:opacity-100 transition-opacity">
+            開發者<br>
+            <span class="font-medium">Don Kwan</span><br>
+            <a href="tel:37985724" class="hover:text-slate-300 transition-colors">37985724</a><br>
+            <a href="mailto:don.kwan@asiaalliedgroup.ocm" class="hover:text-slate-300 transition-colors">E-Mail</a>
+        </div>
     </div>
 
     <script>
         window.onload = function() {
-            const currentPage = window.parent.location.pathname.split('/').pop().replace('.html', '') || 'index';
+            const current = window.parent.location.pathname.split('/').pop().replace('.html','') || 'index';
             document.querySelectorAll('.sidebar-link').forEach(link => {
-                if (link.dataset.page === currentPage) {
-                    link.classList.add('active');
-                }
+                if (link.dataset.page === current) link.classList.add('active');
             });
+        };
+
+        function exportFullBackup() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                pmis_projects: JSON.parse(localStorage.getItem('pmis_projects') || '[]'),
+                pmis_ideas: JSON.parse(localStorage.getItem('pmis_ideas') || '[]')
+            };
+            const now = new Date();
+            const filename = `pmis_backup_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}.json`;
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+            alert(`✅ 備份成功！\n檔名：${filename}`);
+        }
+
+        function importBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const backup = JSON.parse(ev.target.result);
+                    if (backup.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(backup.pmis_projects));
+                    if (backup.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(backup.pmis_ideas));
+                    alert('✅ 匯入成功！頁面即將重新載入'); location.reload();
+                } catch(err) { alert('❌ 匯入失敗！檔案格式錯誤'); }
+            };
+            reader.readAsText(file);
         }
     </script>
 </body>

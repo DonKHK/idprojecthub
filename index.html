@@ -3,211 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Dept. PMIS_Don V2.5 | Dashboard</title>
+    <title>I&D Project Hub v1.1 | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        success: '#00B42A',
-                        warning: '#FF7D00',
-                        danger: '#F53F3F'
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
     </script>
-    <style type="textailwindcss">
-        @layer utilities {
-            .card-hover {
-                @apply transition-all duration-300 hover:-translate-y-2;
-            }
-            .gradient-bg {
-                background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
-            }
-            .status-badge { @apply px-2.5 py-1 rounded-full text-xs font-medium; }
-        }
-    </style>
     <style>
-        body { 
-            background-color: #F8FAFC; 
-            margin: 0; 
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .sidebar-iframe { 
-            width: 44px; 
-            height: 100vh; 
-            border: none; 
-            position: fixed; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 10;
-            background: #ffffff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.05);
-        }
-        .main-content { 
-            margin-left: 44px; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        
-        /* 核心：獨立統計卡片 - 強化陰影+徹底分離 */
-        .stat-card {
-            @apply bg-white rounded-2xl shadow-2xl transition-all duration-300 p-7 border border-gray-100 card-hover;
-        }
-        .project-card {
-            @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-5 border border-gray-100 card-hover;
-        }
-        .dashboard-header {
-            backdrop-filter: blur(10px);
-            background: rgba(255,255,255,0.95) !important;
-        }
+        body { margin: 0; background: #f8fafc; }
+        .sidebar-iframe { width: 44px; height: 100vh; border: none; position: fixed; z-index: 50; transition: all 0.4s ease; }
+        .main-content { margin-left: 44px; transition: all 0.4s ease; }
+        .card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15); }
+        .health-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
     </style>
 </head>
-<body class="gradient-bg">
+<body>
     <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
 
-    <div class="main-content min-h-screen">
-        <header class="dashboard-header shadow-sm px-6 py-5 sticky top-0 z-20">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <button id="toggleSidebar" class="text-gray-600 hover:text-primary text-2xl p-2 rounded-xl hover:bg-primary/5 transition-all">
+    <div class="main-content min-h-screen bg-slate-50">
+        <header class="bg-white shadow-sm px-8 py-3 sticky top-0 z-40">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <h2 class="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h2>
+                    <div>
+                        <h1 class="text-3xl font-bold text-slate-900">I&D Project Hub</h1>
+                        <p class="text-xs text-slate-500 -mt-1">Innovation & Development • v1.1</p>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <main class="p-6 max-w-7xl mx-auto pb-12">
+        <main class="p-8 max-w-7xl mx-auto">
             <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-800 tracking-tight">歡迎回來 👋</h1>
-                <p class="text-gray-500 mt-1 text-lg">項目概覽與實時數據</p>
+                <h2 class="text-4xl font-bold text-slate-900">歡迎回來 👋</h2>
+                <p class="text-xl text-slate-500">項目健康度總覽 • 今日重點</p>
             </div>
 
-            <!-- ========== 4個完全獨立分離的統計板塊 (重點優化) ========== -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-                <!-- 總項目數 - 獨立藍色板塊 -->
-                <div class="stat-card border-l-4 border-primary">
-                    <div class="flex flex-col">
-                        <p class="text-gray-500 text-sm font-medium mb-3">總項目數</p>
-                        <div class="flex justify-between items-end">
-                            <p class="text-6xl font-bold text-primary" id="totalProj">0</p>
-                            <i class="fa fa-folder-open text-5xl text-primary/20"></i>
-                        </div>
-                    </div>
+            <!-- KPI -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10" id="kpiCards"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- 健康度分布 -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-8 card shadow">
+                    <h3 class="font-semibold text-xl mb-6 flex items-center gap-2">
+                        <i class="fa fa-pie-chart text-primary"></i> 項目健康度分布
+                    </h3>
+                    <div class="h-80"><canvas id="healthChart"></canvas></div>
                 </div>
 
-                <!-- 進行中 - 獨立深藍板塊 -->
-                <div class="stat-card border-l-4 border-blue-600">
-                    <div class="flex flex-col">
-                        <p class="text-gray-500 text-sm font-medium mb-3">進行中</p>
-                        <div class="flex justify-between items-end">
-                            <p class="text-6xl font-bold text-blue-600" id="inProgress">0</p>
-                            <i class="fa fa-spinner text-5xl text-blue-600/20"></i>
-                        </div>
-                    </div>
+                <!-- 即將到期 -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-8 card shadow">
+                    <h3 class="font-semibold text-xl mb-6">即將到期 / 已超期項目</h3>
+                    <div id="upcomingList" class="space-y-3 max-h-[420px] overflow-auto pr-2"></div>
                 </div>
 
-                <!-- 規劃中 - 獨立橙色板塊 -->
-                <div class="stat-card border-l-4 border-warning">
-                    <div class="flex flex-col">
-                        <p class="text-gray-500 text-sm font-medium mb-3">規劃中</p>
-                        <div class="flex justify-between items-end">
-                            <p class="text-6xl font-bold text-warning" id="planning">0</p>
-                            <i class="fa fa-clock-o text-5xl text-warning/20"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 已完成 - 獨立綠色板塊 -->
-                <div class="stat-card border-l-4 border-success">
-                    <div class="flex flex-col">
-                        <p class="text-gray-500 text-sm font-medium mb-3">已完成</p>
-                        <div class="flex justify-between items-end">
-                            <p class="text-6xl font-bold text-success" id="completed">0</p>
-                            <i class="fa fa-check-circle text-5xl text-success/20"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 所有項目列表 - 板塊展示 -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 tracking-tight">所有項目</h3>
-                </div>
-                <div id="allProjectsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- 所有項目自動渲染呢度 -->
+                <!-- 最近 Idea -->
+                <div class="lg:col-span-12 bg-white rounded-3xl p-8 card shadow">
+                    <h3 class="font-semibold text-xl mb-6 flex items-center justify-between">
+                        <span>最近提交的 Idea</span>
+                        <a href="approved_ideas.html" class="text-primary text-sm hover:underline flex items-center gap-1">
+                            查看全部 <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </h3>
+                    <div id="recentIdeas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function getProjects(){ return JSON.parse(localStorage.getItem('pmis_projects')) || []; }
-            const projects = getProjects();
+        document.addEventListener('DOMContentLoaded', function () {
+            const projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+            const ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
 
-            // 統計數據
-            document.getElementById('totalProj').innerText = projects.length;
-            document.getElementById('inProgress').innerText = projects.filter(p => p.status === 'In Progress').length;
-            document.getElementById('planning').innerText = projects.filter(p => p.status === 'Planning').length;
-            document.getElementById('completed').innerText = projects.filter(p => p.status === 'Completed').length;
-
-            // 渲染【所有項目】卡片
-            const container = document.getElementById('allProjectsList');
-            if(projects.length === 0){
-                container.innerHTML = '<p class="text-gray-500 text-center col-span-full py-10">暫無項目</p>';
-            } else {
-                container.innerHTML = projects.map(project => {
-                    const statusClass = project.status === 'Completed' 
-                        ? 'bg-success/10 text-success' 
-                        : project.status === 'In Progress' 
-                            ? 'bg-primary/10 text-primary' 
-                            : 'bg-gray-100 text-gray-600';
-                    
-                    const statusText = project.status === 'Completed' 
-                        ? '已完成' 
-                        : project.status === 'In Progress' 
-                            ? '進行中' 
-                            : '規劃中';
-
-                    return `
-                    <a href="detail_project.html?id=${project.id}" class="block project-card">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-gray-800">${project.id || '未命名'} - ${project.name || '未設定'}</h4>
-                            <span class="status-badge ${statusClass}">${statusText}</span>
-                        </div>
-                        <div class="text-sm text-gray-500 space-y-1">
-                            <p>負責人：${project.owner || '未設定'}</p>
-                            <p>日期：${project.startDate || '未設定'} ~ ${project.endDate || '未設定'}</p>
-                            <p class="truncate">描述：${project.description || '無描述'}</p>
-                        </div>
-                    </a>
-                    `;
-                }).join('');
+            function getHealth(project) {
+                if (project.status === 'Completed') return { color: 'bg-emerald-500', label: '正常', type: 'green' };
+                if (!project.endDate) return { color: 'bg-red-500', label: '無結束日期', type: 'red' };
+                const end = new Date(project.endDate);
+                const today = new Date();
+                const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+                if (diffDays < 0) return { color: 'bg-red-500', label: '已超期', type: 'red' };
+                if (diffDays <= 14) return { color: 'bg-amber-500', label: `剩 ${diffDays} 天`, type: 'yellow' };
+                return { color: 'bg-emerald-500', label: '正常', type: 'green' };
             }
 
+            // KPI
+            const total = projects.length;
+            const inProgress = projects.filter(p => p.status === 'In Progress').length;
+            const planning = projects.filter(p => p.status === 'Planning').length;
+            const completed = projects.filter(p => p.status === 'Completed').length;
+            const healthStats = projects.map(getHealth);
+            const green = healthStats.filter(h => h.type === 'green').length;
+            const yellow = healthStats.filter(h => h.type === 'yellow').length;
+            const red = healthStats.filter(h => h.type === 'red').length;
+
+            const kpiData = [
+                { label: '總項目', value: total, icon: 'fa-folder-open', color: 'text-primary' },
+                { label: '進行中', value: inProgress, icon: 'fa-spinner', color: 'text-blue-600' },
+                { label: '規劃中', value: planning, icon: 'fa-calendar', color: 'text-amber-600' },
+                { label: '已完成', value: completed, icon: 'fa-check-circle', color: 'text-emerald-600' },
+                { label: '即將到期', value: yellow, icon: 'fa-exclamation-triangle', color: 'text-amber-600' },
+                { label: '需注意', value: red, icon: 'fa-fire', color: 'text-red-600' }
+            ];
+
+            document.getElementById('kpiCards').innerHTML = kpiData.map(k => `
+                <div class="card bg-white rounded-3xl p-6 shadow">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-slate-500 text-sm">${k.label}</p>
+                            <p class="text-5xl font-bold mt-2">${k.value}</p>
+                        </div>
+                        <i class="fa ${k.icon} text-4xl ${k.color} opacity-80"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            // 健康度環狀圖
+            new Chart(document.getElementById('healthChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['正常', '即將到期', '需注意'],
+                    datasets: [{
+                        data: [green, yellow, red],
+                        backgroundColor: ['#00B42A', '#FF7D00', '#F53F3F'],
+                        borderWidth: 6
+                    }]
+                },
+                options: { cutout: '78%', plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // 即將到期項目 + 最近 Idea（保持不變）
+            const upcoming = projects.filter(p => p.status !== 'Completed')
+                .map(p => ({...p, health: getHealth(p), daysLeft: p.endDate ? Math.ceil((new Date(p.endDate)-new Date())/86400000) : -999 }))
+                .sort((a,b) => a.daysLeft - b.daysLeft).slice(0,6);
+
+            document.getElementById('upcomingList').innerHTML = upcoming.length ? upcoming.map(p => `
+                <a href="detail_project.html?id=${p.id}" class="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-100">
+                    <div class="${p.health.color} health-dot"></div>
+                    <div class="flex-1"><div class="font-medium">${p.name||'未命名項目'}</div><div class="text-xs text-slate-500">${p.id} • ${p.health.label}</div></div>
+                    <div class="text-sm font-medium">${p.daysLeft<0?'已超期':p.daysLeft+'天'}</div>
+                </a>
+            `).join('') : `<p class="text-slate-400 py-12 text-center">目前沒有即將到期的項目</p>`;
+
+            const recentIdeas = ideas.sort((a,b)=>new Date(b.submitDate)-new Date(a.submitDate)).slice(0,4);
+            document.getElementById('recentIdeas').innerHTML = recentIdeas.length ? recentIdeas.map(idea => `
+                <a href="idea_detail.html?id=${idea.id}" class="block bg-slate-100 rounded-2xl p-5 hover:ring-2 hover:ring-primary/30">
+                    <div class="flex justify-between text-xs mb-2"><span class="font-mono text-emerald-600">${idea.id}</span><span>${idea.submitDate}</span></div>
+                    <h4 class="font-semibold">${idea.projectTitle||'未命名 Idea'}</h4>
+                    <p class="text-xs text-slate-500 mt-2 line-clamp-3">${idea.projectBackground||idea.painPoints||'無描述'}</p>
+                </a>
+            `).join('') : `<p class="text-slate-400 py-12 text-center">暫無 Idea 申請</p>`;
+
             // Sidebar 控制
-            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
-            const sidebarIframe = document.getElementById('sidebarFrame');
+            const sidebar = document.getElementById('sidebarFrame');
             const mainContent = document.querySelector('.main-content');
             const toggleBtn = document.getElementById('toggleSidebar');
+            let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
 
             function updateSidebar() {
-                const w = isCollapsed ? '44px' : '260px';
-                const m = isCollapsed ? '44px' : '260px';
-                sidebarIframe.style.width = w;
+                const w = isCollapsed ? '54px' : '260px';
+                const m = isCollapsed ? '54px' : '260px';
+                sidebar.style.width = w;
                 mainContent.style.marginLeft = m;
-                try {
-                    const doc = sidebarIframe.contentWindow.document.documentElement;
-                    if (doc) isCollapsed ? doc.classList.add('sidebar-collapsed') : doc.classList.remove('sidebar-collapsed');
-                } catch(e){}
             }
 
             toggleBtn.addEventListener('click', () => {
@@ -216,7 +177,7 @@
                 updateSidebar();
             });
 
-            sidebarIframe.addEventListener('load', () => setTimeout(updateSidebar, 100));
+            sidebar.addEventListener('load', () => setTimeout(updateSidebar, 150));
             updateSidebar();
         });
     </script>
