@@ -13,7 +13,8 @@
             display: flex; align-items: center; padding: 14px 16px;
             color: #E6ECF7; transition: all 0.3s; margin: 2px 8px; border-radius: 8px;
         }
-        .sidebar-link:hover { background-color: rgba(22, 93, 255, 0.25); color: white; }
+        .sidebar-link:hover:not(.disabled) { background-color: rgba(22, 93, 255, 0.25); color: white; }
+        .sidebar-link.disabled { opacity: 0.45; pointer-events: none; cursor: not-allowed; }
         .sidebar-link i { width: 24px; }
         .sidebar-link.active { background-color: rgba(22, 93, 255, 0.3); border-left: 4px solid #165DFF; }
         .sidebar-text { margin-left: 12px; white-space: nowrap; }
@@ -28,58 +29,7 @@
             <img src="AAI_logo.jpg" alt="AAI Logo" class="logo-img">
         </div>
 
-        <nav class="mt-6 flex-1 space-y-1 px-2">
-            <a href="index.html" target="_parent" class="sidebar-link" data-page="index">
-                <i class="fa fa-dashboard"></i>
-                <span class="sidebar-text">Dashboard</span>
-            </a>
-            <a href="main.html" target="_parent" class="sidebar-link" data-page="main">
-                <i class="fa fa-folder-open"></i>
-                <span class="sidebar-text">我的項目</span>
-            </a>
-            <a href="create_project.html" target="_parent" class="sidebar-link" data-page="create">
-                <i class="fa fa-plus-circle"></i>
-                <span class="sidebar-text">新增項目</span>
-            </a>
-
-            <div class="border-t border-gray-700 my-6 mx-4"></div>
-
-            <a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas">
-                <i class="fa fa-lightbulb-o"></i>
-                <span class="sidebar-text">提交項目</span>
-            </a>
-            <a href="pending_ideas.html" target="_parent" class="sidebar-link" data-page="pending">
-                <i class="fa fa-clock-o"></i>
-                <span class="sidebar-text">待審批項目</span>
-            </a>
-            <a href="approved_ideas.html" target="_parent" class="sidebar-link" data-page="approved">
-                <i class="fa fa-check-circle"></i>
-                <span class="sidebar-text">已審批項目</span>
-            </a>
-
-            <div class="border-t border-gray-700 my-6 mx-4"></div>
-
-            <a href="notes.html" target="_parent" class="sidebar-link" data-page="notes">
-                <i class="fa fa-exclamation-triangle"></i>
-                <span class="sidebar-text">需注意事項</span>
-            </a>
-            <a href="funding.html" target="_parent" class="sidebar-link" data-page="funding">
-                <i class="fa fa-dollar"></i>
-                <span class="sidebar-text">外界資助計劃</span>
-            </a>
-
-            <div class="border-t border-gray-700 my-6 mx-4"></div>
-
-            <button onclick="exportFullBackup()" class="sidebar-link w-full text-left">
-                <i class="fa fa-download"></i>
-                <span class="sidebar-text">全系統備份</span>
-            </button>
-            <label class="sidebar-link w-full text-left cursor-pointer">
-                <i class="fa fa-upload"></i>
-                <span class="sidebar-text">匯入備份</span>
-                <input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)">
-            </label>
-        </nav>
+        <nav class="mt-6 flex-1 space-y-1 px-2" id="menuContainer"></nav>
 
         <div class="mt-auto p-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight opacity-70">
             開發者<br>
@@ -90,37 +40,73 @@
     </div>
 
     <script>
-        const BACKUP_URL = "https://raw.githubusercontent.com/DonKHK/idprojecthub/fc0657363b89623e8b94aa280ee3894d337c9276/backup/pmis_backup.json";
+        const level = localStorage.getItem('accessLevel') || 'guest';
 
         async function autoLoadBackup() {
             try {
-                const res = await fetch(BACKUP_URL + "?t=" + Date.now());
-                if (!res.ok) return;
-                const data = await res.json();
-
-                if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
-                if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
-
-                console.log('✅ 自動載入最新備份成功');
-
-                // 關鍵：成功後自動重新整理頁面（只會 reload 一次）
-                if (!localStorage.getItem('backupJustLoaded')) {
-                    localStorage.setItem('backupJustLoaded', 'true');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 600);   // 延遲 0.6 秒讓資料完全寫入
+                const res = await fetch("https://raw.githubusercontent.com/DonKHK/idprojecthub/fc0657363b89623e8b94aa280ee3894d337c9276/backup/pmis_backup.json?t=" + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
+                    if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
                 }
-            } catch (e) {
-                console.log('⚠️ 自動載入失敗');
-            }
+            } catch (e) {}
         }
 
-        window.onload = function() {
-            const current = window.parent.location.pathname.split('/').pop().replace('.html','') || 'index';
-            document.querySelectorAll('.sidebar-link').forEach(link => {
-                if (link.dataset.page === current) link.classList.add('active');
-            });
+        function buildMenu() {
+            const container = document.getElementById('menuContainer');
+            let html = '';
 
+            if (level === 'admin') {
+                // 管理員模式 - 全部正常
+                html += `<a href="index.html" target="_parent" class="sidebar-link" data-page="index"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
+                html += `<a href="main.html" target="_parent" class="sidebar-link" data-page="main"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
+                html += `<a href="all_projects.html" target="_parent" class="sidebar-link" data-page="all_projects"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
+                html += `<a href="create_project.html" target="_parent" class="sidebar-link" data-page="create"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
+
+                html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+
+                html += `<a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
+                html += `<a href="pending_ideas.html" target="_parent" class="sidebar-link" data-page="pending"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
+                html += `<a href="approved_ideas.html" target="_parent" class="sidebar-link" data-page="approved"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
+
+                html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+                html += `<button onclick="exportFullBackup()" class="sidebar-link w-full text-left"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
+                html += `<label class="sidebar-link w-full text-left cursor-pointer"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
+            } else {
+                // 訪客模式
+                html += `<a href="all_projects.html" target="_parent" class="sidebar-link" data-page="all_projects"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
+                html += `<a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
+                html += `<a href="funding.html" target="_parent" class="sidebar-link" data-page="funding"><i class="fa fa-dollar"></i><span class="sidebar-text">外界資助計劃</span></a>`;
+
+                // 顯示但灰色禁用
+                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
+                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
+                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
+                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
+                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
+                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-exclamation-triangle"></i><span class="sidebar-text">需注意事項</span></a>`;
+
+                html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+                html += `<button onclick="exportFullBackup()" class="sidebar-link w-full text-left disabled"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
+                html += `<label class="sidebar-link w-full text-left cursor-pointer disabled"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
+            }
+
+            html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+            html += `<button onclick="backToLogin()" class="sidebar-link w-full text-left text-red-400 hover:text-red-300"><i class="fa fa-sign-out"></i><span class="sidebar-text">返回登入頁面</span></button>`;
+
+            container.innerHTML = html;
+        }
+
+        window.backToLogin = function() {
+            if (confirm('確定要返回登入頁面嗎？')) {
+                localStorage.removeItem('accessLevel');
+                window.parent.location.href = 'login.html';
+            }
+        };
+
+        window.onload = function() {
+            buildMenu();
             autoLoadBackup();
         };
 
@@ -148,10 +134,10 @@
                     const backup = JSON.parse(ev.target.result);
                     if (backup.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(backup.pmis_projects));
                     if (backup.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(backup.pmis_ideas));
-                    alert('✅ 匯入成功！頁面重新載入'); 
+                    alert('✅ 匯入成功！頁面重新載入');
                     location.reload();
-                } catch(err) { 
-                    alert('❌ 匯入失敗！'); 
+                } catch(err) {
+                    alert('❌ 匯入失敗！');
                 }
             };
             reader.readAsText(file);

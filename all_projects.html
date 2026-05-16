@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>項目總匯 | I&D Project Hub v1.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#165DFF' } } } }
+    </script>
+    <style>
+        body { background: #f8fafc; margin: 0; }
+        .sidebar-iframe { width: 54px; height: 100vh; border: none; position: fixed; transition: all 0.4s ease; z-index: 50; }
+        .main-content { margin-left: 54px; transition: all 0.4s ease; }
+        .proj-card { 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            transition: all 0.3s; 
+        }
+        .proj-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 20px 40px rgba(22,93,255,0.15); 
+        }
+        .health-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <iframe src="sidebar.html" class="sidebar-iframe" id="sidebarFrame"></iframe>
+
+    <div class="main-content min-h-screen">
+        <header class="bg-white shadow-sm px-8 py-3 sticky top-0 z-40 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h2 class="text-3xl font-bold text-slate-900">項目總匯</h2>
+            </div>
+
+            <!-- 返回登入按鈕（只在訪客模式顯示） -->
+            <button onclick="backToLogin()" 
+                    class="flex items-center gap-2 px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-medium">
+                <i class="fa fa-sign-out"></i>
+                返回登入頁
+            </button>
+        </header>
+
+        <main class="p-8">
+            <!-- 說明文字 -->
+            <div class="bg-white rounded-3xl p-6 mb-8 shadow-sm border border-slate-100">
+                <p class="text-slate-700 leading-relaxed">
+                    以下為截至今日，本公司所有待開發 / 開發中 / 已完成之項目。
+                </p>
+                <p class="text-slate-700 mt-3 leading-relaxed">
+                    如您對當中任何 project 有興趣或想了解更多詳情，歡迎聯絡我們部門：
+                </p>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="font-medium">Christy Wong</span><br>
+                        <a href="mailto:christy.wong.yt@asiaalliedgroup.com" class="text-primary hover:underline">
+                            christy.wong.yt@asiaalliedgroup.com
+                        </a>
+                    </div>
+                    <div>
+                        <span class="font-medium">Don Kwan</span><br>
+                        <a href="mailto:don.kwan@asiaalliedgroup.com" class="text-primary hover:underline">
+                            don.kwan@asiaalliedgroup.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 項目列表 -->
+            <div id="allProjectsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar 控制
+        const sidebar = document.getElementById('sidebarFrame');
+        const mainContent = document.querySelector('.main-content');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
+
+        function updateSidebar() {
+            const w = isCollapsed ? '54px' : '260px';
+            const m = isCollapsed ? '54px' : '260px';
+            sidebar.style.width = w;
+            mainContent.style.marginLeft = m;
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+            updateSidebar();
+        });
+
+        sidebar.addEventListener('load', () => setTimeout(updateSidebar, 150));
+        updateSidebar();
+
+        // 返回登入頁
+        window.backToLogin = function() {
+            if (confirm('確定要返回登入頁面嗎？')) {
+                localStorage.removeItem('accessLevel');
+                window.location.href = 'login.html';
+            }
+        };
+
+        // 渲染所有項目
+        function renderAllProjects() {
+            const projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+            const container = document.getElementById('allProjectsContainer');
+
+            if (projects.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-20 text-xl">暫無任何項目資料</p>`;
+                return;
+            }
+
+            container.innerHTML = projects.map(p => {
+                let statusHTML = '';
+                if (p.status === 'Completed') {
+                    statusHTML = `<span class="px-4 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-2xl">已完成</span>`;
+                } else if (p.status === 'In Progress') {
+                    statusHTML = `<span class="px-4 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-2xl">進行中</span>`;
+                } else {
+                    statusHTML = `<span class="px-4 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-2xl">規劃中</span>`;
+                }
+
+                return `
+                <div class="proj-card p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="health-dot ${p.status==='Completed' ? 'bg-emerald-500' : p.status==='In Progress' ? 'bg-blue-500' : 'bg-amber-500'}"></div>
+                            ${statusHTML}
+                        </div>
+                        <span class="text-xs font-mono bg-slate-100 px-3 py-1 rounded-full">${p.id}</span>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">${p.name || '未命名項目'}</h3>
+                    <p class="text-slate-600 text-sm line-clamp-2 mb-3">${p.description || '無描述'}</p>
+                    <p class="text-xs text-slate-500 line-clamp-3 mb-4">${p.detail || '無詳細內容'}</p>
+                    <div class="text-sm text-slate-600">
+                        <span class="text-slate-500">持有人：</span>${p.owner || '—'}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.onload = renderAllProjects;
+    </script>
+</body>
+</html>

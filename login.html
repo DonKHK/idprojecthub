@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登入 | I&D Project Hub v1.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: linear-gradient(135deg, #165DFF, #0A3D99); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md">
+        <div class="text-center mb-8">
+            <img src="AAI_logo.jpg" alt="AAI Logo" class="mx-auto w-20 mb-4">
+            <h1 class="text-3xl font-bold text-slate-900">I&D Project Hub</h1>
+            <p class="text-slate-500 mt-1">Innovation & Development</p>
+        </div>
+
+        <h2 class="text-xl font-semibold text-center mb-6">請選擇登入方式</h2>
+
+        <!-- 管理員登入 -->
+        <div class="mb-8">
+            <p class="text-sm text-slate-600 mb-2">管理員登入</p>
+            <input id="password" type="password" placeholder="輸入密碼" 
+                   class="w-full px-5 py-4 border border-slate-300 rounded-2xl focus:outline-none focus:border-primary text-lg">
+            <button onclick="adminLogin()" 
+                    class="mt-4 w-full py-4 bg-[#165DFF] text-white rounded-2xl font-medium">
+                登入
+            </button>
+        </div>
+
+        <div class="text-center text-slate-400 mb-6">— 或 —</div>
+
+        <!-- 訪客模式 -->
+        <button onclick="guestLogin()" 
+                class="w-full py-4 border border-slate-300 rounded-2xl font-medium hover:bg-slate-50">
+            以訪客身份進入（僅查看項目總匯）
+        </button>
+    </div>
+
+    <script>
+        const BACKUP_URL = "https://raw.githubusercontent.com/DonKHK/idprojecthub/fc0657363b89623e8b94aa280ee3894d337c9276/backup/pmis_backup.json";
+
+        // 載入 JSON 資料（共用函數）
+        async function loadBackupData() {
+            try {
+                const res = await fetch(BACKUP_URL + "?t=" + Date.now());
+                if (!res.ok) return;
+                const data = await res.json();
+
+                if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
+                if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
+                
+                console.log('✅ 登入時已成功載入最新備份資料');
+            } catch (e) {
+                console.log('⚠️ 載入備份失敗', e);
+            }
+        }
+
+        async function adminLogin() {
+            const pwd = document.getElementById('password').value;
+            if (pwd === "37980711") {
+                localStorage.setItem('accessLevel', 'admin');
+                await loadBackupData();        // 登入時載入資料
+                window.location.href = 'index.html';
+            } else {
+                alert('❌ 密碼錯誤！');
+            }
+        }
+
+        async function guestLogin() {
+            localStorage.setItem('accessLevel', 'guest');
+            await loadBackupData();            // 訪客登入時也載入資料
+            window.location.href = 'all_projects.html';
+        }
+
+        // 按 Enter 也可登入
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') adminLogin();
+        });
+    </script>
+</body>
+</html>
