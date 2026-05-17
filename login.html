@@ -3,83 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 防止瀏覽器快取和自動填密碼 -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>登入 | I&D Project Hub v1.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #165DFF, #0A3D99); }
+        body { 
+            background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #165DFF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://picsum.photos/id/1015/1920/1080') center/cover;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
-    <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md">
+<body>
+    <div class="login-card rounded-3xl shadow-2xl p-10 w-full max-w-md mx-4">
         <div class="text-center mb-8">
-            <img src="AAI_logo.jpg" alt="AAI Logo" class="mx-auto w-20 mb-4">
+            <img src="AAI_logo.jpg" alt="AAI Logo" class="mx-auto w-24 mb-6">
             <h1 class="text-3xl font-bold text-slate-900">I&D Project Hub</h1>
-            <p class="text-slate-500 mt-1">Innovation & Development</p>
+            <p class="text-slate-600 mt-1">Innovation &amp; Development • v1.1</p>
         </div>
-
-        <h2 class="text-xl font-semibold text-center mb-6">請選擇登入方式</h2>
 
         <!-- 管理員登入 -->
         <div class="mb-8">
-            <p class="text-sm text-slate-600 mb-2">管理員登入</p>
-            <input id="password" type="password" placeholder="輸入密碼" 
-                   class="w-full px-5 py-4 border border-slate-300 rounded-2xl focus:outline-none focus:border-primary text-lg">
+            <p class="text-sm font-medium text-slate-600 mb-3">🔑 管理員登入</p>
+            <div class="relative">
+                <input id="password" 
+                       type="password" 
+                       autocomplete="new-password"
+                       placeholder="輸入管理員密碼" 
+                       class="w-full px-5 py-4 border border-slate-300 rounded-2xl focus:outline-none text-lg">
+                <button onclick="togglePassword()" 
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <i class="fa fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
             <button onclick="adminLogin()" 
-                    class="mt-4 w-full py-4 bg-[#165DFF] text-white rounded-2xl font-medium">
-                登入
+                    class="mt-5 w-full py-4 bg-[#165DFF] hover:bg-blue-700 text-white rounded-2xl font-semibold text-lg transition-all">
+                立即登入
             </button>
         </div>
 
-        <div class="text-center text-slate-400 mb-6">— 或 —</div>
+        <div class="text-center text-slate-400 my-6 text-sm">— 或 —</div>
 
         <!-- 訪客模式 -->
         <button onclick="guestLogin()" 
-                class="w-full py-4 border border-slate-300 rounded-2xl font-medium hover:bg-slate-50">
-            以訪客身份進入（僅查看項目總匯）
+                class="w-full py-4 border-2 border-slate-300 hover:border-slate-400 rounded-2xl font-medium text-lg hover:bg-slate-50 transition-all">
+            👤 以訪客身份進入
         </button>
+
+        <div id="status" class="mt-6 text-center text-sm min-h-[24px]"></div>
+
+        <div class="text-center text-xs text-slate-500 mt-8">
+            資料自動從 GitHub 同步<br>
+            <span class="font-medium">開發者：Don Kwan</span>
+        </div>
     </div>
 
     <script>
+        const BACKUP_URL = "https://raw.githubusercontent.com/DonKHK/idprojecthub/main/backup/pmis_backup.json";
 
-	const BACKUP_URL = "https://raw.githubusercontent.com/DonKHK/idprojecthub/main/backup/pmis_backup.json";
+        let isPasswordVisible = false;
 
-        // 載入 JSON 資料（共用函數）
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const eye = document.getElementById('eyeIcon');
+            isPasswordVisible = !isPasswordVisible;
+            pwd.type = isPasswordVisible ? 'text' : 'password';
+            eye.className = isPasswordVisible ? 'fa fa-eye-slash' : 'fa fa-eye';
+        }
+
         async function loadBackupData() {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = `<span class="text-blue-600">🔄 正在從 GitHub 同步最新資料...</span>`;
+            
             try {
                 const res = await fetch(BACKUP_URL + "?t=" + Date.now());
-                if (!res.ok) return;
-                const data = await res.json();
-
-                if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
-                if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
-                
-                console.log('✅ 登入時已成功載入最新備份資料');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
+                    if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
+                    statusEl.innerHTML = `<span class="text-emerald-600">✅ 最新資料已載入</span>`;
+                    setTimeout(() => statusEl.innerHTML = '', 2500);
+                }
             } catch (e) {
-                console.log('⚠️ 載入備份失敗', e);
+                statusEl.innerHTML = `<span class="text-amber-600">⚠️ 無法連線 GitHub，使用本地資料</span>`;
             }
         }
 
         async function adminLogin() {
-            const pwd = document.getElementById('password').value;
+            const pwd = document.getElementById('password').value.trim();
+            const statusEl = document.getElementById('status');
+
             if (pwd === "37980711") {
                 localStorage.setItem('accessLevel', 'admin');
-                await loadBackupData();        // 登入時載入資料
-                window.location.href = 'index.html';
+                await loadBackupData();
+                statusEl.innerHTML = `<span class="text-emerald-600">✅ 登入成功，正在進入系統...</span>`;
+                setTimeout(() => window.location.href = 'index.html', 800);
             } else {
-                alert('❌ 密碼錯誤！');
+                statusEl.innerHTML = `<span class="text-red-600">❌ 密碼錯誤，請重試</span>`;
+                document.getElementById('password').focus();
             }
         }
 
         async function guestLogin() {
             localStorage.setItem('accessLevel', 'guest');
-            await loadBackupData();            // 訪客登入時也載入資料
-            window.location.href = 'all_projects.html';
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = `<span class="text-emerald-600">✅ 訪客模式已啟用，正在進入...</span>`;
+            await loadBackupData();
+            setTimeout(() => window.location.href = 'all_projects.html', 800);
         }
 
-        // 按 Enter 也可登入
+        // Enter 鍵登入
         document.getElementById('password').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') adminLogin();
         });
+
+        // 頁面載入時清除密碼欄位
+        window.onload = function() {
+            document.getElementById('password').value = '';
+            loadBackupData();
+        };
     </script>
 </body>
 </html>
