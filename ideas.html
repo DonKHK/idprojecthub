@@ -16,6 +16,15 @@
         .step-content { display: none; }
         .step-content.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .step-indicator.active div { 
+            background-color: #165DFF !important; 
+            color: white !important; 
+        }
+        .step-indicator.active span { 
+            color: #165DFF; 
+            font-weight: 600; 
+        }
     </style>
 </head>
 <body>
@@ -35,7 +44,7 @@
             <!-- 步驟指示器 -->
             <div class="bg-white rounded-3xl shadow p-6 mb-8">
                 <div class="flex justify-between items-center">
-                    <div onclick="goToStep(1)" class="step-indicator flex-1 flex flex-col items-center cursor-pointer" data-step="1">
+                    <div onclick="goToStep(1)" class="step-indicator flex-1 flex flex-col items-center cursor-pointer active" data-step="1">
                         <div id="step1-dot" class="w-10 h-10 rounded-2xl bg-primary text-white flex items-center justify-center font-bold">1</div>
                         <span class="text-xs mt-2">申請人資料</span>
                     </div>
@@ -82,7 +91,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div><label class="block text-sm font-medium mb-2">姓名</label><input name="pmName" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                                 <div><label class="block text-sm font-medium mb-2">聯絡電話</label><input name="pmPhone" type="tel" class="w-full border border-slate-300 rounded-2xl p-4"></div>
-                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="pmEmail" type="email" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="pmEmail" type="text" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                                 <div><label class="block text-sm font-medium mb-2">部門</label><input name="pmDepartment" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                             </div>
                         </div>
@@ -91,7 +100,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div><label class="block text-sm font-medium mb-2">姓名</label><input name="scName" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                                 <div><label class="block text-sm font-medium mb-2">聯絡電話</label><input name="scPhone" type="tel" class="w-full border border-slate-300 rounded-2xl p-4"></div>
-                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="scEmail" type="email" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="scEmail" type="text" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                                 <div><label class="block text-sm font-medium mb-2">部門</label><input name="scDepartment" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                             </div>
                         </div>
@@ -100,28 +109,39 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div><label class="block text-sm font-medium mb-2">姓名</label><input name="ownerName" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                                 <div><label class="block text-sm font-medium mb-2">聯絡電話</label><input name="ownerPhone" type="tel" class="w-full border border-slate-300 rounded-2xl p-4"></div>
-                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="ownerEmail" type="email" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="ownerEmail" type="text" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                                 <div><label class="block text-sm font-medium mb-2">部門/公司</label><input name="ownerDepartment" class="w-full border border-slate-300 rounded-2xl p-4"></div>
                             </div>
                         </div>
+
+                       <div class="mt-8">
+                            <h4 class="font-medium mb-3">Technical Support (if any)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label class="block text-sm font-medium mb-2">姓名</label><input name="TechSupName" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                                <div><label class="block text-sm font-medium mb-2">聯絡電話</label><input name="TechSupPhone" type="tel" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                                <div><label class="block text-sm font-medium mb-2">Email</label><input name="TechSupEmail" type="text" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                                <div><label class="block text-sm font-medium mb-2">部門/公司</label><input name="TechSupDepartment" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Step 2 -->
                     <div class="step-content" id="step2">
                         <h3 class="text-xl font-semibold mb-6">2. 項目基本資訊</h3>
                         <div><label class="block text-sm font-medium mb-2">Project / Idea Title</label><input name="projectTitle" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">項目描述(一句內)</label><textarea name="projectdes" rows="1" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+
                         <div class="mt-6"><label class="block text-sm font-medium mb-2">Project Type</label>
                             <select name="projectType" class="w-full border border-slate-300 rounded-2xl p-4">
                                 <option value="">請選擇</option>
-                                <option value="ai">AI 人工智能應用</option>
-                                <option value="iot">IoT 物聯網系統</option>
-                                <option value="automation">流程自動化</option>
-                                <option value="app">流動應用程式</option>
-                                <option value="web">網頁系統</option>
-                                <option value="hardware">硬件/設備開發</option>
-                                <option value="drone">無人機應用</option>
-                                <option value="robotics">機械人/自動化設備</option>
-                                <option value="other">其他</option>
+                                <option value="bdev">Business Transformation/Development</option>
+                                <option value="proc">Process Improvement</option>
+                                <option value="cost">Cost Saving</option>
+                                <option value="cexp">Customer Experience</option>
+                                <option value="tdev">Technology Development</option>
+                                <option value="other">Others</option>
                             </select>
                         </div>
                         <div class="mt-6"><label class="block text-sm font-medium mb-2">項目背景及目標</label><textarea name="projectBackground" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
@@ -135,18 +155,24 @@
                         <div><label class="block text-sm font-medium mb-2">項目範圍</label><textarea name="projectScope" rows="5" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                         <div class="mt-6"><label class="block text-sm font-medium mb-2">預期交付成果</label><textarea name="deliverables" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                         <div class="mt-6"><label class="block text-sm font-medium mb-2">預期效益</label><textarea name="benefits" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">項目實施階段（Phase 1/2/3/.....）</label><textarea name="phase" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                         <div class="mt-6"><label class="block text-sm font-medium mb-2">潛在風險及實施困難</label><textarea name="risks" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
-                        <div class="mt-6"><label class="block text-sm font-medium mb-2">預計完成時間(月)</label><input name="duration" type="number" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+			<div class="mt-6"><label class="block text-sm font-medium mb-2">預計開始日期</label><input name="start_date" type="date" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+			<div class="mt-6"><label class="block text-sm font-medium mb-2">預計完成日期</label><input name="target_date" type="date" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+
                     </div>
 
                     <!-- Step 4 -->
                     <div class="step-content" id="step4">
                         <h3 class="text-xl font-semibold mb-6">4. 項目預算詳情</h3>
                         <div><label class="block text-sm font-medium mb-2">總預算估算 (HKD)</label><input name="totalBudget" type="number" class="w-full border border-slate-300 rounded-2xl p-4"></div>
-                        <div class="mt-6"><label class="block text-sm font-medium mb-2">預算細分</label><textarea name="budgetBreakdown" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
-                        <div class="mt-6"><label class="block text-sm font-medium mb-2">預算來源</label><input name="budgetSource" class="w-full border border-slate-300 rounded-2xl p-4"></div>
-                        <div class="mt-6"><label class="block text-sm font-medium mb-2">目標政府資助</label><input name="govFund" class="w-full border border-slate-300 rounded-2xl p-4"></div>
-                        <div class="mt-6"><label class="block text-sm font-medium mb-2">目標資金詳情</label><textarea name="fundDetails" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">項目預算細分</label><textarea name="budgetBreakdown" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">項目預算來源</label><input name="budgetSource" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">目標外界(政府)資助</label><input name="govFund" class="w-full border border-slate-300 rounded-2xl p-4"></div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">目標外界(政府)資金詳情</label><textarea name="fundDetails" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">其他所需資源（非資金類，例如機械及設備）</label><textarea name="othsupport" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">預計需要公司哪些內部部門協助</label><textarea name="othsdeptsup" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                     </div>
 
                     <!-- Step 5 -->
@@ -163,17 +189,18 @@
                                 <option value="undecided">待定</option>
                             </select>
                         </div>
+                        <div class="mt-6"><label class="block text-sm font-medium mb-2">專利申請國家</label><textarea name="ipregion" rows="4" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                     </div>
 
                     <!-- Step 6 -->
                     <div class="step-content" id="step6">
                         <h3 class="text-xl font-semibold mb-6">6. 其他補充資料</h3>
-                        <div><label class="block text-sm font-medium mb-2">Project Termination Factor</label><textarea name="terminationFactor" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
+                        <div><label class="block text-sm font-medium mb-2">項目終止觸發條件 (3個)</label><textarea name="terminationFactor" rows="3" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                         <div class="mt-6"><label class="block text-sm font-medium mb-2">其他補充備註</label><textarea name="comments" rows="5" class="w-full border border-slate-300 rounded-3xl p-4"></textarea></div>
                     </div>
 
                     <!-- 按鈕 -->
-                    <div class="flex justify-between pt-8 border-t">
+                   <div class="flex justify-between pt-8 border-t">
                         <button type="button" id="prevBtn" onclick="prevStep()" class="px-8 py-4 border border-slate-300 rounded-2xl hover:bg-slate-100 hidden">上一步</button>
                         <div class="flex gap-3">
                             <button type="button" onclick="resetForm()" class="px-8 py-4 border border-slate-300 rounded-2xl hover:bg-slate-100">重置</button>
@@ -193,23 +220,46 @@
         function showStep(step) {
             document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
             document.getElementById(`step${step}`).classList.add('active');
+
+            // 更新指示器
+            document.querySelectorAll('.step-indicator').forEach(ind => {
+                ind.classList.toggle('active', parseInt(ind.dataset.step) === step);
+            });
+
             currentStep = step;
             document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
             document.getElementById('nextBtn').classList.toggle('hidden', step === totalSteps);
             document.getElementById('submitBtn').classList.toggle('hidden', step !== totalSteps);
         }
 
-        function nextStep() { if (currentStep < totalSteps) showStep(currentStep + 1); }
-        function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+        function goToStep(step) {
+            showStep(step);
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) showStep(currentStep + 1);
+        }
+
+        function prevStep() {
+            if (currentStep > 1) showStep(currentStep - 1);
+        }
 
         function resetForm() {
             document.getElementById('projectForm').reset();
             showStep(1);
         }
 
-        // 提交表單
+        // 提交表單（已加入驗證 + 自動跳轉）
+        // 提交表單（已修正 + 加入 Technical Support）
         document.getElementById('projectForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            const title = this.querySelector('[name="projectTitle"]').value.trim();
+            if (!title) {
+                alert('請至少填寫 Project / Idea Title');
+                return;
+            }
+
             const fd = new FormData(this);
             const now = new Date();
 
@@ -218,45 +268,67 @@
                 submitDate: now.toISOString().slice(0, 10),
                 submitTime: now.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false }),
                 status: 'pending',
-                applicantName: fd.get('applicantName'),
-                department: fd.get('department'),
-                pmName: fd.get('pmName'),
-                pmPhone: fd.get('pmPhone'),
-                pmEmail: fd.get('pmEmail'),
-                scName: fd.get('scName'),
-                ownerName: fd.get('ownerName'),
-                projectTitle: fd.get('projectTitle'),
-                projectType: fd.get('projectType'),
-                projectBackground: fd.get('projectBackground'),
-                painPoints: fd.get('painPoints'),
-                currentWorkarounds: fd.get('currentWorkarounds'),
-                projectScope: fd.get('projectScope'),
-                deliverables: fd.get('deliverables'),
-                benefits: fd.get('benefits'),
-                risks: fd.get('risks'),
-                duration: fd.get('duration'),
-                totalBudget: fd.get('totalBudget'),
-                budgetBreakdown: fd.get('budgetBreakdown'),
-                govFund: fd.get('govFund'),
-                techDirection: fd.get('techDirection'),
-                innovation: fd.get('innovation'),
-                terminationFactor: fd.get('terminationFactor'),
-                comments: fd.get('comments')
+                
+                // Step 1
+                applicantName: fd.get('applicantName') || '',
+                department: fd.get('department') || '',
+                pmName: fd.get('pmName') || '',
+                pmPhone: fd.get('pmPhone') || '',
+                pmEmail: fd.get('pmEmail') || '',
+                pmDepartment: fd.get('pmDepartment') || '',
+                scName: fd.get('scName') || '',
+                scPhone: fd.get('scPhone') || '',
+                scEmail: fd.get('scEmail') || '',
+                scDepartment: fd.get('scDepartment') || '',
+                ownerName: fd.get('ownerName') || '',
+                ownerPhone: fd.get('ownerPhone') || '',
+                ownerEmail: fd.get('ownerEmail') || '',
+                ownerDepartment: fd.get('ownerDepartment') || '',
+                
+                // 新增 Technical Support
+                TechSupName: fd.get('TechSupName') || '',
+                TechSupPhone: fd.get('TechSupPhone') || '',
+                TechSupEmail: fd.get('TechSupEmail') || '',
+                TechSupDepartment: fd.get('TechSupDepartment') || '',
+
+                // Step 2~6
+                projectTitle: title,
+                projectdes: fd.get('projectdes') || '',
+                projectType: fd.get('projectType') || '',
+                projectBackground: fd.get('projectBackground') || '',
+                painPoints: fd.get('painPoints') || '',
+                currentWorkarounds: fd.get('currentWorkarounds') || '',
+                projectScope: fd.get('projectScope') || '',
+                deliverables: fd.get('deliverables') || '',
+                benefits: fd.get('benefits') || '',
+                phase: fd.get('phase') || '',
+                risks: fd.get('risks') || '',
+                start_date: fd.get('start_date') || '',
+                target_date: fd.get('target_date') || '',
+                totalBudget: fd.get('totalBudget') || '',
+                budgetBreakdown: fd.get('budgetBreakdown') || '',
+                govFund: fd.get('govFund') || '',
+                fundDetails: fd.get('fundDetails') || '',
+                othsupport: fd.get('othsupport') || '',
+                othsdeptsup: fd.get('othsdeptsup') || '',
+                techDirection: fd.get('techDirection') || '',
+                innovation: fd.get('innovation') || '',
+                techRequirements: fd.get('techRequirements') || '',
+                requireIP: fd.get('requireIP') || '',
+                ipregion: fd.get('ipregion') || '',
+                terminationFactor: fd.get('terminationFactor') || '',
+                comments: fd.get('comments') || ''
             };
 
             let ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
             ideas.push(idea);
             localStorage.setItem('pmis_ideas', JSON.stringify(ideas));
 
-            const filename = `project_idea_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}.json`;
-            const blob = new Blob([JSON.stringify(ideas, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+            alert(`✅ Idea 提交成功！\nID: ${idea.id}\n\n跳轉到待審批頁面...`);
 
-            alert(`✅ Idea 申請已成功提交！\n\n已儲存為：${filename}`);
-            this.reset();
-            showStep(1);
+            setTimeout(() => {
+                window.location.href = 'pending_ideas.html';
+            }, 800);
         });
 
         // Sidebar 控制

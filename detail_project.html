@@ -138,7 +138,7 @@
             document.getElementById('overallHealthDot').className = `health-dot ${health.color}`;
             document.getElementById('overallHealthLabel').textContent = health.label;
 
-            // 填入資料
+                        // === 填入項目資料（已修正日期對應） ===
             document.getElementById('projectName').textContent = project.name || '未命名項目';
             document.getElementById('projectId').textContent = `ID：${project.id}`;
             document.getElementById('projectDesc').textContent = project.description || '無';
@@ -151,8 +151,10 @@
             document.getElementById('projectSupport').textContent = project.support || '無';
             document.getElementById('totalAmount').textContent = `HK$ ${Number(project.totalAmount || 0).toLocaleString()}`;
             document.getElementById('usedAmount').textContent = `HK$ ${Number(project.usedAmount || 0).toLocaleString()}`;
-            document.getElementById('startDate').textContent = project.startDate || '無';
-            document.getElementById('endDate').textContent = project.endDate || '無';
+
+            // === 重點修正：日期顯示（支援 Idea 轉 Project） ===
+            document.getElementById('startDate').textContent = project.startDate || project.start_date || '未設定';
+            document.getElementById('endDate').textContent = project.endDate || project.target_date || project.end_date || '未設定';
 
             // === 重要修正：來自 Idea 連結 ===
             const fromIdeaEl = document.getElementById('fromIdea');
@@ -175,6 +177,7 @@
             const st = statusMap[project.status] || statusMap['Planning'];
             statusEl.className = `px-6 py-3 text-sm font-semibold rounded-2xl ${st.class}`;
             statusEl.textContent = st.text;
+
 
             // 階段列表
             const phaseList = document.getElementById('phaseList');
@@ -210,6 +213,36 @@
                 alert('🗑️ 項目已成功刪除！');
                 location.href = 'main.html';
             };
+
+if (localStorage.getItem('accessLevel') === 'admin') {
+    // 新增階段
+    const addPhase = document.getElementById('addPhaseBtn');
+    if (addPhase) {
+        addPhase.classList.add('opacity-50', 'cursor-not-allowed', '!bg-slate-300', '!text-slate-500');
+        addPhase.href = '#';
+        addPhase.onclick = () => alert('無法新增階段');
+    }
+    // 階段編輯按鈕
+    document.querySelectorAll('a[href^="edit_phase.html"]').forEach(a => {
+        a.classList.add('opacity-50', 'cursor-not-allowed', '!bg-slate-300', '!text-slate-500');
+        a.href = '#';
+        a.onclick = () => alert('無法編輯階段');
+    // 訪客模式：灰色禁用「編輯項目」和「刪除項目」
+    const editBtn = document.getElementById('editBtn');
+    if (editBtn) {
+        editBtn.classList.add('!bg-slate-300', '!text-slate-500', '!cursor-not-allowed', 'opacity-50');
+        editBtn.href = '#';
+        editBtn.onclick = () => alert('無法編輯項目');
+    }
+    // 禁用刪除項目按鈕
+    const deleteBtn = document.querySelector('button[onclick="deleteProject()"]');
+    if (deleteBtn) {
+        deleteBtn.classList.add('!bg-slate-300', '!text-slate-500', '!cursor-not-allowed', 'opacity-50');
+        deleteBtn.onclick = () => alert('無法刪除項目');
+    }
+    });
+}
+
 
             // Sidebar 控制
             let isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';

@@ -121,36 +121,46 @@
             };
         }
 
-        function renderProjects(data) {
-            const container = document.getElementById('projContainer');
-            container.innerHTML = data.map(p => {
-                const health = getHealth(p);
-                return `
-                <div class="proj-card p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="${health.color} health-dot"></div>
-                            <span class="text-xs font-medium text-slate-600">${health.label}</span>
-                        </div>
-                        <span class="text-sm px-4 py-1 rounded-2xl ${p.status==='Completed'?'bg-emerald-100 text-emerald-700': p.status==='In Progress'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}">
-                            ${p.status || 'Planning'}
-                        </span>
-                    </div>
-                    <h3 class="font-bold text-xl">${p.name || '未命名項目'}</h3>
-                    <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-slate-600 mt-4">
-                        <div><span class="text-slate-500">持有人：</span>${p.owner || '—'}</div>
-                        <div><span class="text-slate-500">經理：</span>${p.manager || '—'}</div>
-                        <div><span class="text-slate-500">開始：</span>${p.startDate || '—'}</div>
-                        <div><span class="text-slate-500">結束：</span>${p.endDate || '—'}</div>
-                        <div class="col-span-2"><span class="text-slate-500">總金額：</span><span class="font-semibold">HK$ ${Number(p.totalAmount || 0).toLocaleString()}</span></div>
-                    </div>
-                    <div class="flex gap-3 mt-6">
-                        <a href="detail_project.html?id=${p.id}" class="flex-1 bg-primary text-white text-center py-3 rounded-2xl hover:bg-primary/90">查看詳情</a>
-                        <a href="edit_project.html?id=${p.id}" class="flex-1 border border-slate-300 text-center py-3 rounded-2xl hover:bg-slate-50">編輯</a>
-                    </div>
-                </div>`;
-            }).join('');
-        }
+       function renderProjects(data) {
+    const container = document.getElementById('projContainer');
+    container.innerHTML = data.map(p => {
+        const health = getHealth(p);
+        
+        return `
+        <div class="proj-card p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="${health.color} health-dot"></div>
+                    <span class="text-xs font-medium text-slate-600">${health.label}</span>
+                </div>
+                
+                <!-- Project ID -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono bg-slate-100 px-3 py-1 rounded-full text-slate-600">${p.id}</span>
+                    <span class="text-sm px-4 py-1 rounded-2xl ${p.status==='Completed'?'bg-emerald-100 text-emerald-700': p.status==='In Progress'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}">
+                        ${p.status || 'Planning'}
+                    </span>
+                </div>
+            </div>
+            
+            <h3 class="font-bold text-xl mb-1">${p.name || '未命名項目'}</h3>
+            <p class="text-xs text-slate-500 mb-4">${p.id}</p>   <!-- 額外一行顯示 ID（更醒目） -->
+            
+            <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-slate-600 mt-4">
+                <div><span class="text-slate-500">持有人：</span>${p.owner || '—'}</div>
+                <div><span class="text-slate-500">經理：</span>${p.manager || '—'}</div>
+                <div><span class="text-slate-500">開始：</span>${p.startDate || p.start_date || '—'}</div>
+                <div><span class="text-slate-500">結束：</span>${p.endDate || p.target_date || '—'}</div>
+                <div class="col-span-2"><span class="text-slate-500">總金額：</span><span class="font-semibold">HK$ ${Number(p.totalAmount || 0).toLocaleString()}</span></div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <a href="detail_project.html?id=${p.id}" class="flex-1 bg-primary text-white text-center py-3 rounded-2xl hover:bg-primary/90">查看詳情</a>
+                <a href="edit_project.html?id=${p.id}" class="flex-1 border border-slate-300 text-center py-3 rounded-2xl hover:bg-slate-50">編輯</a>
+            </div>
+        </div>`;
+    }).join('');
+}
 
         function filterStatus(status) {
             currentFilter = status;
@@ -183,6 +193,24 @@
         document.addEventListener('DOMContentLoaded', function() {
             projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
             renderProjects(projects);
+
+// === 只對訪客禁用 ===
+if (localStorage.getItem('accessLevel') === 'admin') {
+	// 禁用「新增項目」按鈕
+    const addBtn = document.querySelector('a[href="create_project.html"]');
+    if (addBtn) {
+        addBtn.classList.add('opacity-50', 'cursor-not-allowed', '!bg-slate-300', '!text-slate-500');
+        addBtn.href = '#';
+        addBtn.onclick = () => alert('無法新增項目');
+    }
+
+	// 禁用所有「編輯」按鈕
+   	document.querySelectorAll('a[href^="edit_project.html"]').forEach(btn => {
+        btn.classList.add('!bg-slate-300', '!text-slate-500', '!cursor-not-allowed', 'opacity-50');
+        btn.href = '#';
+        btn.onclick = () => alert('無法編輯項目');
+    });
+}
 
             // Sidebar 控制
             const sidebar = document.getElementById('sidebarFrame');

@@ -26,7 +26,7 @@
                 <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                     <i class="fa fa-bars"></i>
                 </button>
-                <h2 class="text-3xl font-bold text-slate-900">待審批 Ideas</h2>
+                <h2 class="text-3xl font-bold text-slate-900">待審批項目</h2>
             </div>
         </header>
 
@@ -162,49 +162,53 @@
             const container = document.getElementById('pendingList');
 
             if (ideas.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-center py-20">暫無 Idea 申請</p>`;
+                container.innerHTML = `<p class="text-gray-400 text-center py-20">暫無項目申請</p>`;
                 return;
             }
 
             container.innerHTML = ideas.map(idea => {
-                let statusHTML = '';
-                if (idea.status === 'pending') {
-                    statusHTML = `
-                        <button onclick="approveIdea('${idea.id}')" class="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm font-medium">批准</button>
-                        <button onclick="aiAnalyzeFromCard('${idea.id}')" class="px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-700 text-sm font-medium flex items-center gap-2">
-                            <i class="fa fa-magic"></i> AI 分析
-                        </button>`;
-                }
+    let statusHTML = '';
+    if (idea.status === 'pending') {
+        statusHTML = `
+            <button onclick="approveIdea('${idea.id}')" class="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm font-medium">批准</button>
+            <button onclick="aiAnalyzeFromCard('${idea.id}')" class="px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-700 text-sm font-medium flex items-center gap-2">
+                <i class="fa fa-magic"></i> AI 分析
+            </button>`;
+    }
 
-                let analysisBtn = '';
-                if (idea.aiAnalysis) {
-                    analysisBtn = `
-                        <button onclick="showStoredFromCard('${idea.id}')" class="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 text-sm font-medium flex items-center gap-2">
-                            <i class="fa fa-chart-bar"></i> 查看 AI 分析結果
-                        </button>`;
-                }
+    let analysisBtn = '';
+    if (idea.aiAnalysis) {
+        analysisBtn = `
+            <button onclick="showStoredFromCard('${idea.id}')" class="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 text-sm font-medium flex items-center gap-2">
+                <i class="fa fa-chart-bar"></i> 查看 AI 分析結果
+            </button>`;
+    }
 
-                return `
-                <div class="idea-card p-6">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-mono bg-slate-100 px-3 py-1 rounded-full">${idea.id}</span>
-                            <h3 class="font-bold text-xl mt-3">${idea.projectTitle || '未命名 Idea'}</h3>
-                            <p class="text-sm text-gray-500 mt-1">提交：${idea.submitDate}</p>
-                        </div>
-                        <div class="flex flex-wrap gap-3">
-                            ${statusHTML}
-                            ${analysisBtn}
-                            <button onclick="deleteIdea('${idea.id}')" class="px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-sm text-gray-600 line-clamp-3">
-                        ${idea.projectBackground || idea.painPoints || '無描述'}
-                    </div>
-                </div>`;
-            }).join('');
+    return `
+    <div class="idea-card p-6">
+        <div class="flex justify-between items-start">
+            <div>
+                <!-- 可點擊的 Idea ID -->
+                <a href="idea_detail.html?id=${idea.id}" 
+                   class="text-xs font-mono bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-full inline-block transition-colors">
+                    ${idea.id}
+                </a>
+                <h3 class="font-bold text-xl mt-3">${idea.projectTitle || '未命名 Idea'}</h3>
+                <p class="text-sm text-gray-500 mt-1">提交：${idea.submitDate} ${idea.submitTime || ''}</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                ${statusHTML}
+                ${analysisBtn}
+                <button onclick="deleteIdea('${idea.id}')" class="px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mt-4 text-sm text-gray-600 line-clamp-3">
+            ${idea.projectBackground || idea.painPoints || '無描述'}
+        </div>
+    </div>`;
+}).join('');
         }
 
         window.approveIdea = function(ideaId) {

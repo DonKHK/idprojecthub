@@ -16,9 +16,7 @@
         .sidebar-link:hover:not(.disabled) { background-color: rgba(22, 93, 255, 0.25); color: white; }
         .sidebar-link.disabled { opacity: 0.45; pointer-events: none; cursor: not-allowed; }
         .sidebar-link i { width: 24px; }
-        .sidebar-link.active { background-color: rgba(22, 93, 255, 0.3); border-left: 4px solid #165DFF; }
         .sidebar-text { margin-left: 12px; white-space: nowrap; }
-        .sidebar-collapsed .sidebar-text { display: none !important; }
         .logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; }
     </style>
 </head>
@@ -31,72 +29,172 @@
 
         <nav class="mt-6 flex-1 space-y-1 px-2" id="menuContainer"></nav>
 
-        <div class="mt-auto p-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight opacity-70">
-            開發者<br>
-            <span class="font-medium">Don Kwan</span><br>
-            <a href="tel:37985724" class="hover:text-slate-300">37985724</a><br>
-            <a href="mailto:don.kwan@asiaalliedgroup.ocm" class="hover:text-slate-300">E-Mail</a>
+        <!-- 開發者區域（可連點5次） -->
+     <div onclick="handleDevClick()" id="devArea"
+     class="mt-0 pt-4 px-4 pb-4 border-t border-gray-700 text-xs text-slate-400 text-center leading-tight cursor-pointer hover:text-slate-300 select-none">
+    開發者<br>
+    Don Kwan<br>
+    37985724<br>
+    <a href="mailto:don.kwan@asiaalliedgroup.com" class="hover:text-slate-300">e-mail</a>
+</div>
+    </div>
+
+    <!-- 開發者登入 Modal -->
+    <div id="devModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm mx-4">
+            <h3 class="text-xl font-bold text-center mb-6">開發者登入 (SuperAdmin)</h3>
+            
+            <input id="devPassword" type="password" placeholder="輸入開發者密碼" 
+                   class="w-full px-5 py-4 border border-slate-300 rounded-2xl focus:outline-none text-lg mb-6">
+
+            <div class="flex gap-4">
+                <button onclick="cancelDevLogin()" 
+                        class="flex-1 py-4 border border-slate-300 rounded-2xl font-medium">取消</button>
+                <button onclick="devLogin()" 
+                        class="flex-1 py-4 bg-[#165DFF] text-white rounded-2xl font-medium">登入</button>
+            </div>
         </div>
     </div>
 
     <script>
         const level = localStorage.getItem('accessLevel') || 'guest';
+        let devClickCount = 0;
+        let lastClickTime = 0;
 
-        async function autoLoadBackup() {
-            try {
-                const res = await fetch("https://raw.githubusercontent.com/DonKHK/idprojecthub/fc0657363b89623e8b94aa280ee3894d337c9276/backup/pmis_backup.json?t=" + Date.now());
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
-                    if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
-                }
-            } catch (e) {}
-        }
-
-        function buildMenu() {
-            const container = document.getElementById('menuContainer');
-            let html = '';
-
-            if (level === 'admin') {
-                // 管理員模式 - 全部正常
-                html += `<a href="index.html" target="_parent" class="sidebar-link" data-page="index"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
-                html += `<a href="main.html" target="_parent" class="sidebar-link" data-page="main"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
-                html += `<a href="all_projects.html" target="_parent" class="sidebar-link" data-page="all_projects"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
-                html += `<a href="create_project.html" target="_parent" class="sidebar-link" data-page="create"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
-
-                html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
-
-                html += `<a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
-                html += `<a href="pending_ideas.html" target="_parent" class="sidebar-link" data-page="pending"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
-                html += `<a href="approved_ideas.html" target="_parent" class="sidebar-link" data-page="approved"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
-
-                html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
-                html += `<button onclick="exportFullBackup()" class="sidebar-link w-full text-left"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
-                html += `<label class="sidebar-link w-full text-left cursor-pointer"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
-            } else {
-                // 訪客模式
-                html += `<a href="all_projects.html" target="_parent" class="sidebar-link" data-page="all_projects"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
-                html += `<a href="ideas.html" target="_parent" class="sidebar-link" data-page="ideas"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
-                html += `<a href="funding.html" target="_parent" class="sidebar-link" data-page="funding"><i class="fa fa-dollar"></i><span class="sidebar-text">外界資助計劃</span></a>`;
-
-                // 顯示但灰色禁用
-                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
-                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
-                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
-                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
-                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
-                html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-exclamation-triangle"></i><span class="sidebar-text">需注意事項</span></a>`;
-
-                html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
-                html += `<button onclick="exportFullBackup()" class="sidebar-link w-full text-left disabled"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
-                html += `<label class="sidebar-link w-full text-left cursor-pointer disabled"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
+        function handleDevClick() {
+            const now = Date.now();
+            if (now - lastClickTime > 2000) { // 超過2秒重置
+                devClickCount = 0;
             }
+            lastClickTime = now;
+            devClickCount++;
 
-            html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
-            html += `<button onclick="backToLogin()" class="sidebar-link w-full text-left text-red-400 hover:text-red-300"><i class="fa fa-sign-out"></i><span class="sidebar-text">返回登入頁面</span></button>`;
-
-            container.innerHTML = html;
+            if (devClickCount === 5) {
+                document.getElementById('devModal').classList.remove('hidden');
+                document.getElementById('devPassword').focus();
+                devClickCount = 0;
+            }
         }
+
+        function devLogin() {
+            const pwd = document.getElementById('devPassword').value.trim();
+            if (pwd === "96270630") {
+                localStorage.setItem('accessLevel', 'superadmin');
+                alert('✅ SuperAdmin 登入成功！\n已獲得最高權限');
+                document.getElementById('devModal').classList.add('hidden');
+                location.reload(); // 重新載入 sidebar
+            } else {
+                alert('❌ 密碼錯誤');
+                document.getElementById('devPassword').value = '';
+            }
+        }
+
+        function cancelDevLogin() {
+            document.getElementById('devModal').classList.add('hidden');
+            document.getElementById('devPassword').value = '';
+        }
+
+        // ... 其餘 buildMenu、autoLoadBackup、exportFullBackup 等函數保持不變 ...
+async function autoLoadBackup() {
+    // 只在第一次登入或沒有資料時才載入備份
+    const hasData = localStorage.getItem('pmis_ideas') || localStorage.getItem('pmis_projects');
+    
+    if (!hasData) {
+        try {
+            console.log('首次載入，從 GitHub 同步備份...');
+            const res = await fetch("https://raw.githubusercontent.com/DonKHK/idprojecthub/fc0657363b89623e8b94aa280ee3894d337c9276/backup/pmis_backup.json?t=" + Date.now());
+            if (res.ok) {
+                const data = await res.json();
+                if (data.pmis_projects) localStorage.setItem('pmis_projects', JSON.stringify(data.pmis_projects));
+                if (data.pmis_ideas) localStorage.setItem('pmis_ideas', JSON.stringify(data.pmis_ideas));
+                console.log('✅ 已從 GitHub 載入初始備份');
+            }
+        } catch (e) {
+            console.log('⚠️ 備份載入失敗');
+        }
+    } else {
+        console.log('已有本地資料，跳過 GitHub 同步');
+    }
+}
+
+function buildMenu() {
+    const container = document.getElementById('menuContainer');
+    let html = '';
+    const level = localStorage.getItem('accessLevel') || 'guest';
+
+    if (level === 'superadmin') {
+        // ==================== SUPERADMIN (最高權限) ====================
+        html += `<a href="index.html" target="_parent" class="sidebar-link"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
+        html += `<a href="main.html" target="_parent" class="sidebar-link"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
+        html += `<a href="all_projects.html" target="_parent" class="sidebar-link"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
+        html += `<a href="create_project.html" target="_parent" class="sidebar-link"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+
+        html += `<a href="ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
+        html += `<a href="pending_ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
+        html += `<a href="approved_ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        html += `<a href="notes.html" target="_parent" class="sidebar-link"><i class="fa fa-exclamation-triangle"></i><span class="sidebar-text">需注意事項</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        html += `<a href="funding.html" target="_parent" class="sidebar-link"><i class="fa fa-dollar"></i><span class="sidebar-text">外界資助計劃</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        html += `<button onclick="exportFullBackup()" class="sidebar-link w-full text-left"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
+        html += `<label class="sidebar-link w-full text-left cursor-pointer"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
+
+    } else if (level === 'admin') {
+        // ==================== ADMIN (受限) ====================
+        html += `<a href="index.html" target="_parent" class="sidebar-link"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
+        html += `<a href="main.html" target="_parent" class="sidebar-link"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
+        html += `<a href="all_projects.html" target="_parent" class="sidebar-link"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
+        
+        // 新增項目灰色
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+
+        html += `<a href="ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
+        html += `<a href="pending_ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
+        html += `<a href="approved_ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        html += `<a href="notes.html" target="_parent" class="sidebar-link"><i class="fa fa-exclamation-triangle"></i><span class="sidebar-text">需注意事項</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        html += `<a href="funding.html" target="_parent" class="sidebar-link"><i class="fa fa-dollar"></i><span class="sidebar-text">外界資助計劃</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        // 備份功能灰色
+        html += `<button onclick="alert('❌ Admin 無法使用全系統備份')" class="sidebar-link w-full text-left disabled"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
+        html += `<label class="sidebar-link w-full text-left cursor-pointer disabled"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
+
+    } else {
+        // ==================== GUEST ====================
+        html += `<a href="all_projects.html" target="_parent" class="sidebar-link"><i class="fa fa-list"></i><span class="sidebar-text">項目總匯</span></a>`;
+        html += `<a href="ideas.html" target="_parent" class="sidebar-link"><i class="fa fa-lightbulb-o"></i><span class="sidebar-text">提交項目</span></a>`;
+        html += `<a href="funding.html" target="_parent" class="sidebar-link"><i class="fa fa-dollar"></i><span class="sidebar-text">外界資助計劃</span></a>`;
+
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>`;
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-folder-open"></i><span class="sidebar-text">我的項目</span></a>`;
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-plus-circle"></i><span class="sidebar-text">新增項目</span></a>`;
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-clock-o"></i><span class="sidebar-text">待審批項目</span></a>`;
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-check-circle"></i><span class="sidebar-text">已審批項目</span></a>`;
+        html += `<a href="#" class="sidebar-link disabled"><i class="fa fa-exclamation-triangle"></i><span class="sidebar-text">需注意事項</span></a>`;
+
+        html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+        html += `<button onclick="alert('❌ 訪客無法使用備份功能')" class="sidebar-link w-full text-left disabled"><i class="fa fa-download"></i><span class="sidebar-text">全系統備份</span></button>`;
+        html += `<label class="sidebar-link w-full text-left cursor-pointer disabled"><i class="fa fa-upload"></i><span class="sidebar-text">匯入備份</span><input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(event)"></label>`;
+    }
+
+    html += `<div class="border-t border-gray-700 my-6 mx-4"></div>`;
+    html += `<button onclick="backToLogin()" class="sidebar-link w-full text-left text-red-400 hover:text-red-300"><i class="fa fa-sign-out"></i><span class="sidebar-text">返回登入頁面</span></button>`;
+
+    container.innerHTML = html;
+}
+ 
 
         window.backToLogin = function() {
             if (confirm('確定要返回登入頁面嗎？')) {
@@ -105,6 +203,7 @@
             }
         };
 
+//==================
         window.onload = function() {
             buildMenu();
             autoLoadBackup();

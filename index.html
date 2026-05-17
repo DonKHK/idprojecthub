@@ -43,10 +43,7 @@
         </header>
 
         <main class="p-8 max-w-7xl mx-auto">
-            <div class="mb-8">
-                <h2 class="text-4xl font-bold text-slate-900">歡迎回來 👋</h2>
-                <p class="text-xl text-slate-500">項目健康度總覽 • 今日重點</p>
-            </div>
+
 
             <!-- KPI -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10" id="kpiCards"></div>
@@ -57,7 +54,7 @@
                     <h3 class="font-semibold text-xl mb-6 flex items-center gap-2">
                         <i class="fa fa-pie-chart text-primary"></i> 項目健康度分布
                     </h3>
-                    <div class="h-80"><canvas id="healthChart"></canvas></div>
+                    <div class="h-50"><canvas id="healthChart"></canvas></div>
                 </div>
 
                 <!-- 即將到期 -->
@@ -138,7 +135,7 @@
                         borderWidth: 6
                     }]
                 },
-                options: { cutout: '78%', plugins: { legend: { position: 'bottom' } } }
+                options: { cutout: '50%', plugins: { legend: { position: 'bottom' } } }
             });
 
             // 即將到期項目 + 最近 Idea（保持不變）

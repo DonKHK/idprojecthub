@@ -15,6 +15,7 @@
         .main-content { margin-left: 54px; transition: all 0.4s ease; }
         .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 24px; }
         .info-label { font-weight: 600; color: #64748b; min-width: 220px; }
+        .section-title { font-size: 1.1rem; font-weight: 700; color: #1e40af; margin: 20px 0 12px; }
     </style>
 </head>
 <body>
@@ -38,65 +39,75 @@
 
             <!-- 1. 申請人及聯絡人資料 -->
             <div class="card mt-6">
-                <h3 class="text-lg font-bold mb-4">1. 申請人及聯絡人資料</h3>
+                <h3 class="section-title">1. 申請人及聯絡人資料</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div class="info-item"><span class="info-label">申請人姓名</span><span id="applicantName"></span></div>
                     <div class="info-item"><span class="info-label">所屬部門</span><span id="department"></span></div>
                     <div class="info-item"><span class="info-label">PM 姓名</span><span id="pmName"></span></div>
                     <div class="info-item"><span class="info-label">PM 電話</span><span id="pmPhone"></span></div>
                     <div class="info-item"><span class="info-label">PM Email</span><span id="pmEmail"></span></div>
-                    <div class="info-item"><span class="info-label">第二聯絡人</span><span id="scName"></span></div>
-                    <div class="info-item"><span class="info-label">項目持有人</span><span id="ownerName"></span></div>
+                    <div class="info-item"><span class="info-label">PM 部門</span><span id="pmDepartment"></span></div>
+                    <div class="info-item"><span class="info-label">Second Contact 姓名</span><span id="scName"></span></div>
+                    <div class="info-item"><span class="info-label">Project Owner 姓名</span><span id="ownerName"></span></div>
+                    <div class="info-item"><span class="info-label">Technical Support 姓名</span><span id="TechSupName"></span></div>
+                    <div class="info-item"><span class="info-label">Technical Support 電話</span><span id="TechSupPhone"></span></div>
+                    <div class="info-item"><span class="info-label">Technical Support Email</span><span id="TechSupEmail"></span></div>
                 </div>
             </div>
 
             <!-- 2. 項目基本資訊 -->
             <div class="card mt-6">
-                <h3 class="text-lg font-bold mb-4">2. 項目基本資訊</h3>
-                <div class="space-y-4 text-sm">
+                <h3 class="section-title">2. 項目基本資訊</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div class="info-item"><span class="info-label">項目名稱</span><span id="projectTitle2"></span></div>
+                    <div class="info-item"><span class="info-label">一句描述</span><span id="projectdes"></span></div>
                     <div class="info-item"><span class="info-label">項目類型</span><span id="projectType"></span></div>
-                    <div><span class="info-label block mb-1">項目背景及目標</span><p id="projectBackground" class="whitespace-pre-line"></p></div>
-                    <div><span class="info-label block mb-1">痛點描述</span><p id="painPoints" class="whitespace-pre-line"></p></div>
                 </div>
+                <div class="mt-6"><span class="info-label block mb-1">項目背景及目標</span><p id="projectBackground" class="whitespace-pre-line"></p></div>
+                <div class="mt-6"><span class="info-label block mb-1">痛點描述</span><p id="painPoints" class="whitespace-pre-line"></p></div>
             </div>
 
             <!-- 3. 項目範圍與成果 -->
             <div class="card mt-6">
-                <h3 class="text-lg font-bold mb-4">3. 項目範圍與成果</h3>
+                <h3 class="section-title">3. 項目範圍與成果</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div><span class="info-label block mb-1">項目範圍</span><p id="projectScope" class="whitespace-pre-line"></p></div>
                     <div><span class="info-label block mb-1">預期交付成果</span><p id="deliverables" class="whitespace-pre-line"></p></div>
                     <div><span class="info-label block mb-1">預期效益</span><p id="benefits" class="whitespace-pre-line"></p></div>
-                    <div><span class="info-label block mb-1">風險與挑戰</span><p id="risks" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">實施階段</span><p id="phase" class="whitespace-pre-line"></p></div>
+                    <div class="info-item"><span class="info-label">預計開始日期</span><span id="start_date"></span></div>
+                    <div class="info-item"><span class="info-label">預計完成日期</span><span id="target_date"></span></div>
                 </div>
             </div>
 
-            <!-- 4. 技術與創新 -->
+            <!-- 4. 預算與資源 -->
             <div class="card mt-6">
-                <h3 class="text-lg font-bold mb-4">4. 技術與創新</h3>
-                <div class="space-y-4 text-sm">
-                    <div class="info-item"><span class="info-label">建議技術方向</span><span id="techDirection"></span></div>
-                    <div class="info-item"><span class="info-label">創新亮點</span><span id="innovation"></span></div>
-                    <div class="info-item"><span class="info-label">技術需求</span><span id="techRequirements"></span></div>
-                    <div class="info-item"><span class="info-label">是否需要申請專利</span><span id="requireIP"></span></div>
-                </div>
-            </div>
-
-            <!-- 5. 預算與資源 -->
-            <div class="card mt-6">
-                <h3 class="text-lg font-bold mb-4">5. 預算與資源</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <h3 class="section-title">4. 預算與資源</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div class="info-item"><span class="info-label">總預算估算</span><span id="totalBudget"></span></div>
                     <div class="info-item"><span class="info-label">目標政府資助</span><span id="govFund"></span></div>
                     <div class="md:col-span-2"><span class="info-label block mb-1">預算細分</span><p id="budgetBreakdown" class="whitespace-pre-line"></p></div>
+                    <div class="md:col-span-2"><span class="info-label block mb-1">其他所需資源</span><p id="othsupport" class="whitespace-pre-line"></p></div>
                 </div>
             </div>
 
-            <div class="mt-8 text-center">
-                <a href="approved_ideas.html" class="text-primary hover:underline flex items-center justify-center gap-2">
-                    ← 返回已審批 Ideas
-                </a>
+            <!-- 5. 技術與創新 -->
+            <div class="card mt-6">
+                <h3 class="section-title">5. 技術與創新</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div><span class="info-label block mb-1">建議技術方向</span><p id="techDirection" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">創新亮點</span><p id="innovation" class="whitespace-pre-line"></p></div>
+                    <div><span class="info-label block mb-1">技術需求</span><p id="techRequirements" class="whitespace-pre-line"></p></div>
+                    <div class="info-item"><span class="info-label">是否申請專利</span><span id="requireIP"></span></div>
+                    <div class="info-item"><span class="info-label">專利申請國家</span><span id="ipregion"></span></div>
+                </div>
+            </div>
+
+            <!-- 6. 其他補充 -->
+            <div class="card mt-6">
+                <h3 class="section-title">6. 其他補充</h3>
+                <div><span class="info-label block mb-1">項目終止觸發條件</span><p id="terminationFactor" class="whitespace-pre-line"></p></div>
+                <div class="mt-6"><span class="info-label block mb-1">其他備註</span><p id="comments" class="whitespace-pre-line"></p></div>
             </div>
         </main>
     </div>
@@ -115,7 +126,7 @@
             const idea = ideas.find(i => i.id === ideaId);
 
             if (!idea) {
-                alert('找不到此 Idea 申請');
+                alert('找不到此 Idea');
                 history.back();
                 return;
             }
@@ -123,28 +134,41 @@
             // 填入資料
             document.getElementById('projectTitle').textContent = idea.projectTitle || '未命名 Idea';
             document.getElementById('ideaId').textContent = idea.id;
+
             document.getElementById('applicantName').textContent = idea.applicantName || '—';
             document.getElementById('department').textContent = idea.department || '—';
             document.getElementById('pmName').textContent = idea.pmName || '—';
             document.getElementById('pmPhone').textContent = idea.pmPhone || '—';
             document.getElementById('pmEmail').textContent = idea.pmEmail || '—';
+            document.getElementById('pmDepartment').textContent = idea.pmDepartment || '—';
             document.getElementById('scName').textContent = idea.scName || '—';
             document.getElementById('ownerName').textContent = idea.ownerName || '—';
+            document.getElementById('TechSupName').textContent = idea.TechSupName || '—';
+            document.getElementById('TechSupPhone').textContent = idea.TechSupPhone || '—';
+            document.getElementById('TechSupEmail').textContent = idea.TechSupEmail || '—';
+
             document.getElementById('projectTitle2').textContent = idea.projectTitle || '—';
+            document.getElementById('projectdes').textContent = idea.projectdes || '—';
             document.getElementById('projectType').textContent = idea.projectType || '—';
             document.getElementById('projectBackground').textContent = idea.projectBackground || '—';
             document.getElementById('painPoints').textContent = idea.painPoints || '—';
             document.getElementById('projectScope').textContent = idea.projectScope || '—';
             document.getElementById('deliverables').textContent = idea.deliverables || '—';
             document.getElementById('benefits').textContent = idea.benefits || '—';
-            document.getElementById('risks').textContent = idea.risks || '—';
+            document.getElementById('phase').textContent = idea.phase || '—';
+            document.getElementById('start_date').textContent = idea.start_date || '—';
+            document.getElementById('target_date').textContent = idea.target_date || '—';
+            document.getElementById('totalBudget').textContent = idea.totalBudget ? `HK$ ${idea.totalBudget}` : '—';
+            document.getElementById('govFund').textContent = idea.govFund || '—';
+            document.getElementById('budgetBreakdown').textContent = idea.budgetBreakdown || '—';
+            document.getElementById('othsupport').textContent = idea.othsupport || '—';
             document.getElementById('techDirection').textContent = idea.techDirection || '—';
             document.getElementById('innovation').textContent = idea.innovation || '—';
             document.getElementById('techRequirements').textContent = idea.techRequirements || '—';
             document.getElementById('requireIP').textContent = idea.requireIP || '—';
-            document.getElementById('totalBudget').textContent = idea.totalBudget ? `HK$ ${idea.totalBudget}` : '—';
-            document.getElementById('govFund').textContent = idea.govFund || '—';
-            document.getElementById('budgetBreakdown').textContent = idea.budgetBreakdown || '—';
+            document.getElementById('ipregion').textContent = idea.ipregion || '—';
+            document.getElementById('terminationFactor').textContent = idea.terminationFactor || '—';
+            document.getElementById('comments').textContent = idea.comments || '—';
 
             // Sidebar 控制
             const sidebar = document.getElementById('sidebarFrame');

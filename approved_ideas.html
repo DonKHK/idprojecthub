@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>已審批 Ideas | I&D Project Hub v1.1</title>
+    <title>已審批項目 | I&D Project Hub v1.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
@@ -34,7 +34,7 @@
                 <button id="toggleSidebar" class="text-3xl p-2 hover:bg-slate-100 rounded-2xl">
                     <i class="fa fa-bars"></i>
                 </button>
-                <h2 class="text-3xl font-bold text-slate-900">已審批 Ideas</h2>
+                <h2 class="text-3xl font-bold text-slate-900">已審批項目</h2>
             </div>
         </header>
 
@@ -65,86 +65,130 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            function loadApprovedIdeas() {
-                let ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
-                const container = document.getElementById('approvedList');
-                const approved = ideas.filter(i => i.status === 'approved' || i.status === 'converted');
+          function loadApprovedIdeas() {
+    let ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
+    const container = document.getElementById('approvedList');
+    const approved = ideas.filter(i => i.status === 'approved' || i.status === 'converted');
+    const isAdmin = localStorage.getItem('accessLevel') === 'admin';
+    const isSuperAdmin = localStorage.getItem('accessLevel') === 'superadmin';
 
-                if (approved.length === 0) {
-                    container.innerHTML = `<p class="text-gray-400 text-center py-20">暫無已審批的 Idea</p>`;
-                    return;
-                }
+    if (approved.length === 0) {
+        container.innerHTML = `<p class="text-gray-400 text-center py-20">暫無已審批的 Idea</p>`;
+        return;
+    }
 
-                container.innerHTML = approved.map(idea => {
-                    const approvedTime = idea.approvedDateTime || '—';
-                    let convertedInfo = '';
+    container.innerHTML = approved.map(idea => {
+        const approvedTime = idea.approvedDateTime || '—';
+        let convertedInfo = '';
 
-                    if (idea.status === 'converted') {
-                        convertedInfo = `<br><span class="text-blue-600">已加入項目 ${idea.convertedProjectId || ''} (${idea.convertedDateTime || '—'})</span>`;
-                    }
+        if (idea.status === 'converted') {
+            convertedInfo = `<br><span class="text-blue-600">已加入項目 ${idea.convertedProjectId || ''} (${idea.convertedDateTime || '—'})</span>`;
+        }
 
-                    return `
-                    <div class="idea-card p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="text-xs font-mono bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">${idea.id}</span>
-                                <h3 class="font-bold text-xl mt-3">${idea.projectTitle || '未命名 Idea'}</h3>
-                                <p class="text-sm text-gray-500 mt-1">
-                                    提交：${idea.submitDate} ${idea.submitTime || ''}<br>
-                                    已審批：${approvedTime}
-                                    ${convertedInfo}
-                                </p>
-                            </div>
-                            
-                            ${idea.status === 'converted' ? `
-                            <span class="px-5 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium">已加入項目</span>` : `
-                            <button onclick="convertToProject('${idea.id}')" 
-                                    class="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 flex items-center gap-2">
-                                <i class="fa fa-plus"></i> 加入我的項目
-                            </button>`}
-                        </div>
-                        <div class="mt-4 text-sm text-gray-600 line-clamp-3">
-                            ${idea.projectBackground || idea.painPoints || '無描述'}
-                        </div>
-                    </div>`;
-                }).join('');
+        let actionButton = '';
+
+        if (idea.status === 'converted') {
+            actionButton = `<span class="px-5 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium">已加入項目</span>`;
+        } else {
+            if (isSuperAdmin) {
+                // SuperAdmin 可以正常使用
+                actionButton = `
+                    <button onclick="convertToProject('${idea.id}')" 
+                            class="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 flex items-center gap-2">
+                        <i class="fa fa-plus"></i> 加入我的項目
+                    </button>`;
+            } else {
+                // Admin 變灰色禁用
+                actionButton = `
+                    <button onclick="alert('❌ Admin 無法直接加入項目 (請使用 SuperAdmin)')" 
+                            class="px-6 py-3 bg-slate-300 text-slate-500 rounded-xl cursor-not-allowed flex items-center gap-2">
+                        <i class="fa fa-plus"></i> 加入我的項目
+                    </button>`;
             }
+        }
 
-            window.convertToProject = function(ideaId) {
-                let ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
-                let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
+        return `
+        <div class="idea-card p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <a href="idea_detail.html?id=${idea.id}" 
+                       class="text-xs font-mono bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-full inline-block transition-colors">
+                        ${idea.id}
+                    </a>
+                    <h3 class="font-bold text-xl mt-3">${idea.projectTitle || '未命名 Idea'}</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        提交：${idea.submitDate} ${idea.submitTime || ''}<br>
+                        已審批：${approvedTime}
+                        ${convertedInfo}
+                    </p>
+                </div>
+                
+                ${actionButton}
+            </div>
+            <div class="mt-4 text-sm text-gray-600 line-clamp-3">
+                ${idea.projectBackground || idea.painPoints || '無描述'}
+            </div>
+        </div>`;
+    }).join('');
+}
+            
 
-                const idea = ideas.find(i => i.id === ideaId);
-                if (!idea) return;
+window.convertToProject = function(ideaId) {
+    let ideas = JSON.parse(localStorage.getItem('pmis_ideas')) || [];
+    let projects = JSON.parse(localStorage.getItem('pmis_projects')) || [];
 
-                const newProjectId = generateProjectId();   // 使用加強版 ID
-                const now = new Date();
-                const convertedTime = now.toLocaleString('zh-HK', { hour12: false });
+    const idea = ideas.find(i => i.id === ideaId);
+    if (!idea) {
+        alert('找不到此 Idea');
+        return;
+    }
 
-                const newProject = {
-                    id: newProjectId,
-                    name: idea.projectTitle || '來自 Idea 的項目',
-                    description: idea.projectBackground ? idea.projectBackground.substring(0, 150) : '',
-                    detail: idea.deliverables || '',
-                    owner: idea.ownerName || idea.applicantName || '',
-                    manager: idea.pmName || '',
-                    totalAmount: Number(idea.totalBudget) || 0,
-                    status: 'Planning',
-                    createdFromIdea: idea.id,
-                    createdDate: now.toISOString()
-                };
+    const newProjectId = generateProjectId();
+    const now = new Date();
 
-                projects.push(newProject);
-                localStorage.setItem('pmis_projects', JSON.stringify(projects));
+    const newProject = {
+        id: newProjectId,
+        name: idea.projectTitle || '來自 Idea 的項目',
+        description: idea.projectdes || idea.projectBackground || '',
+        detail: [
+            idea.projectBackground ? "背景：" + idea.projectBackground : '',
+            idea.painPoints ? "痛點：" + idea.painPoints : '',
+            idea.projectScope ? "範圍：" + idea.projectScope : '',
+            idea.deliverables ? "交付成果：" + idea.deliverables : '',
+            idea.benefits ? "預期效益：" + idea.benefits : '',
+            idea.phase ? "實施階段：" + idea.phase : '',
+            idea.othsupport ? "其他資源：" + idea.othsupport : '',
+            idea.comments ? "備註：" + idea.comments : ''
+        ].filter(Boolean).join('\n\n'),
 
-                idea.status = 'converted';
-                idea.convertedProjectId = newProjectId;
-                idea.convertedDateTime = convertedTime;
-                localStorage.setItem('pmis_ideas', JSON.stringify(ideas));
+        startDate: idea.start_date || '',        // ← 修正重點
+        endDate: idea.target_date || '',         // ← 修正重點
 
-                alert(`✅ 已加入我的項目！\n項目 ID：${newProjectId}`);
-                loadApprovedIdeas();
-            };
+        owner: idea.ownerName || idea.applicantName || '',
+        manager: idea.pmName || '',
+        support: idea.TechSupName || idea.techDirection || idea.othsupport || '',
+        totalAmount: Number(idea.totalBudget) || 0,
+        status: 'Planning',
+        appliedGovernmentFunding: idea.govFund || '',
+        projectTerminationFactor: idea.terminationFactor || '',
+        createdFromIdea: idea.id,
+        createdDate: now.toISOString(),
+        phases: []
+    };
+
+    projects.push(newProject);
+    localStorage.setItem('pmis_projects', JSON.stringify(projects));
+
+    // 更新 Idea 狀態
+    idea.status = 'converted';
+    idea.convertedProjectId = newProjectId;
+    idea.convertedDateTime = now.toLocaleString('zh-HK', { hour12: false });
+
+    localStorage.setItem('pmis_ideas', JSON.stringify(ideas));
+
+    alert(`✅ 已成功轉為項目！\n項目 ID：${newProjectId}\n開始日期：${idea.start_date || '未填'}\n完成日期：${idea.target_date || '未填'}`);
+    loadApprovedIdeas();
+};
 
             loadApprovedIdeas();
 
