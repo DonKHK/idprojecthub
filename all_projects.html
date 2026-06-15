@@ -139,9 +139,19 @@
                     </div>
                     <h3 class="font-bold text-xl mb-2">${p.name || '未命名項目'}</h3>
                     <p class="text-slate-600 text-sm line-clamp-2 mb-3">${p.description || '無描述'}</p>
-                    <p class="text-xs text-slate-500 line-clamp-3 mb-4">${p.detail || '無詳細內容'}</p>
+                    <p class="text-xs text-slate-500 line-clamp-[12] leading-5 min-h-[240px] whitespace-pre-line mb-4">${p.detail || '無詳細內容'}</p>
                     <div class="text-sm text-slate-600">
+
+<div class="text-sm text-slate-600 mb-1">
+    <a href="https://youtu.be/QRipU0GFa7c" target="_blank" class="hover:underline">
+        <span class="text-slate-500">Demo</span>
+    </a>
+
+</div>
+
+
                         <span class="text-slate-500">持有人：</span>${p.owner || '—'}
+                        
                     </div>
                 </div>`;
             }).join('');
