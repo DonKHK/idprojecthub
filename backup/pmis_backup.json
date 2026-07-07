@@ -1,5 +1,5 @@
 {
-  "exportDate": "2026-06-30T06:02:27.905Z",
+  "exportDate": "2026-07-07T13:32:45.522Z",
   "pmis_projects": [
     {
       "id": "260501",
@@ -15,40 +15,34 @@
       "status": "In Progress",
       "phases": [
         {
-          "type": "Feasibility Study",
+          "type": "Pilot / UAT",
           "manager": "",
-          "startDate": "2026-05-05",
-          "endDate": "2026-05-13",
-          "budget": "0",
-          "status": "Completed",
-          "description": ""
-        },
-        {
-          "id": "1778464715843",
-          "type": "Idea / R&D",
           "startDate": "",
           "endDate": "",
           "budget": 0,
           "status": "Completed",
-          "description": ""
+          "description": "",
+          "usedAmount": 0
         },
         {
-          "type": "Idea / R&D",
-          "manager": "",
-          "startDate": "2026-05-04",
-          "endDate": "2026-05-25",
-          "budget": "0",
-          "status": "In Progress",
-          "description": ""
+          "id": "1778464715843",
+          "type": "Feasibility Study",
+          "startDate": "",
+          "endDate": "",
+          "budget": 0,
+          "status": "Completed",
+          "description": "",
+          "usedAmount": 0
         },
         {
           "id": "1778478718476",
-          "type": "Idea / R&D",
-          "startDate": "2026-05-12",
-          "endDate": "2026-05-20",
+          "type": "Commercialization",
+          "startDate": "",
+          "endDate": "",
           "budget": 0,
-          "status": "Planning",
-          "description": ""
+          "status": "In Progress",
+          "description": "",
+          "usedAmount": 0
         }
       ],
       "appliedGovernmentFunding": "NA",
@@ -176,14 +170,25 @@
       "startDate": "2025-08-31",
       "endDate": "2026-08-31",
       "status": "In Progress",
-      "phases": [],
+      "phases": [
+        {
+          "id": "1783428869448",
+          "type": "Pilot / UAT",
+          "startDate": "",
+          "endDate": "2026-07-31",
+          "budget": 0,
+          "usedAmount": 0,
+          "status": "In Progress",
+          "description": "Version 0.5 UAT In Progress"
+        }
+      ],
       "createdDate": "2026-05-25T05:17:08.976Z"
     },
     {
       "id": "260506",
       "name": "Anti-counterfeiting (VLM comparison)",
       "description": "Develop AI-powered mobile app for microscopic fingerprint anti-counterfeiting verification",
-      "detail": "\nDesign an anti-counterfeiting device to identify the authenticity of documents, such as certificates, invoices, and special patterns.\nThe device allows users to upload photos to a server via a mobile application. The server then compares the uploaded images with a reference database and uses an \"AI image recognition\" method to verify the authenticity of the images.\nMicroscopic Fingerprint Each product has unique microscopic features (texture, imperfections, material variations) acting as its own “fingerprint”. Manufacturer captures a high-resolution reference image with a mobile phone + macro lens (800x recommended); consumer captures the second image the same way.\n2. AI Comparison AI model compares the physical fingerprints of the two images. If they match as “identical”, the product is verified as genuine.\n3. Practical Use Suitable for luxury goods, handbags, watches, pharmaceuticals and other easily counterfeited products. It can also be used to verify related certificates.\n\n\n\n",
+      "detail": "Design an anti-counterfeiting device to identify the authenticity of documents, such as certificates, invoices, and special patterns.\nThe device allows users to upload photos to a server via a mobile application. The server then compares the uploaded images with a reference database and uses an \"AI image recognition\" method to verify the authenticity of the images.\nMicroscopic Fingerprint Each product has unique microscopic features (texture, imperfections, material variations) acting as its own “fingerprint”. Manufacturer captures a high-resolution reference image with a mobile phone + macro lens (800x recommended); consumer captures the second image the same way.\n2. AI Comparison AI model compares the physical fingerprints of the two images. If they match as “identical”, the product is verified as genuine.\n3. Practical Use Suitable for luxury goods, handbags, watches, pharmaceuticals and other easily counterfeited products. It can also be used to verify related certificates.\n\n\n\n",
       "appliedGovernmentFunding": "NA",
       "fundingSupportHkd": 0,
       "projectTerminationFactor": "",
@@ -193,8 +198,19 @@
       "totalAmount": 500000,
       "startDate": "",
       "endDate": "",
-      "status": "In Progress",
-      "phases": [],
+      "status": "Planning",
+      "phases": [
+        {
+          "id": "1783429023457",
+          "type": "Feasibility Study",
+          "startDate": "",
+          "endDate": "2026-08-31",
+          "budget": 0,
+          "usedAmount": 0,
+          "status": "In Progress",
+          "description": ""
+        }
+      ],
       "createdDate": "2026-05-25T05:19:01.666Z"
     },
     {
@@ -230,7 +246,18 @@
       "startDate": "2026-04-15",
       "endDate": "2026-12-31",
       "status": "In Progress",
-      "phases": [],
+      "phases": [
+        {
+          "id": "1783429236858",
+          "type": "Demo",
+          "startDate": "2026-07-01",
+          "endDate": "2026-09-30",
+          "budget": 0,
+          "usedAmount": 0,
+          "status": "Planning",
+          "description": "Tentative:\n- Jul 2026: Trial at Mui Wo GFS Helipad\n- Jul-Aug 2026: Trial at China Merchants Wharf, and flight to Mui Wo GFS Helipad (for AF-01 only)\n- Aug 2026: First Flight PR Event"
+        }
+      ],
       "createdDate": "2026-06-15T08:55:41.570Z"
     },
     {
@@ -581,6 +608,56 @@
       "approvedDateTime": "30/6/2026 13:58:15",
       "convertedProjectId": "260605",
       "convertedDateTime": "30/6/2026 13:58:36"
+    },
+    {
+      "id": "IDEA-438015",
+      "submitDate": "2026-07-07",
+      "submitTime": "21:20",
+      "status": "pending",
+      "applicantName": "Walter / Victor",
+      "department": "CSL/ML",
+      "pmName": "Walter / Victor",
+      "pmPhone": "65016920",
+      "pmEmail": "walter.chiu@cityservicesgroup.com",
+      "pmDepartment": "CSL/ML",
+      "scName": "Walter / Victor",
+      "scPhone": "65016920",
+      "scEmail": "walter.chiu@cityservicesgroup.com",
+      "scDepartment": "CSL/ML",
+      "ownerName": "Walter / Victor",
+      "ownerPhone": "65016920",
+      "ownerEmail": "walter.chiu@cityservicesgroup.com",
+      "ownerDepartment": "CSL/ML",
+      "TechSupName": "Walter / Victor",
+      "TechSupPhone": "65016920",
+      "TechSupEmail": "walter.chiu@cityservicesgroup.com",
+      "TechSupDepartment": "CSL/ML",
+      "projectTitle": "iAM Smart Property Management",
+      "projectdes": "Using iAM Smart QR Code for visitor registration",
+      "projectType": "cexp",
+      "projectBackground": "Property Management Limited has adopted the \"iAM Smart\" Personal QR Code to enhance the existing visitor registration system. This upgrade provides a more efficient, secure, and convenient visitor registration process, while strengthening personal privacy protection and significantly improving the overall user experience.",
+      "painPoints": "NA",
+      "currentWorkarounds": "NA",
+      "projectScope": "NA",
+      "deliverables": "NA",
+      "benefits": "Cost-effectiveness : Reduces cost of user’s subscribing Access Card such as Octopus!\nSaves hardware cost (of the reader stand and installation) by using a normal QR code scanner.\nConvenience : Residents typically carry their mobile phones, eliminating the need to carry an additional access card.\nHigher security : Biometric authentication from \"iAM Smart\" enhances security by preventing unauthorized access due to stolen access cards.\n",
+      "phase": "NA",
+      "risks": "NA",
+      "start_date": "",
+      "target_date": "",
+      "totalBudget": "",
+      "budgetBreakdown": "NA",
+      "govFund": "NA",
+      "fundDetails": "NA",
+      "othsupport": "NA",
+      "othsdeptsup": "NA",
+      "techDirection": "NA",
+      "innovation": "NA",
+      "techRequirements": "NA",
+      "requireIP": "yes",
+      "ipregion": "NA",
+      "terminationFactor": "NA",
+      "comments": ""
     }
   ]
 }
