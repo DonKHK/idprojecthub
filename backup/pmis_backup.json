@@ -1,5 +1,5 @@
 {
-  "exportDate": "2026-07-08T11:18:15.719Z",
+  "exportDate": "2026-07-10T06:52:46.272Z",
   "pmis_projects": [
     {
       "id": "260501",
@@ -139,9 +139,9 @@
     },
     {
       "id": "260504",
-      "name": "Financial Report Analysis",
+      "name": "AI MFR Platform",
       "description": "Develop AI agents for automated Monthly Financial Report Analysis and generation.",
-      "detail": "\nBuild a Project Financial Analysis Report Generator tailored for Monthly Financial Report Analysis (MFR). The traditional method requires top management, project managers, and QS managers to review MFR reports for each project to identify progress or\nfinancial issues. This can be time-consuming and prone to human error due to information overload.\nThis project will develop several AI agents, including a RAG agent, a Report Generator Agent, and a Notification Agent, to create a report generator\napplication.\n",
+      "detail": "Project Background & Objective\nThis project aims to utilize AI to help different user groups analyze figures in financial reports. The AI will follow existing practices to identify and highlight potential risks across various areas. This enables users to gain a clearer overview of project health and take immediate actions when risks are identified by the AI.\n\nPain Points\nCurrently, users perform a considerable amount of manual work to analyze monthly financial reports. Most of these tasks are routine and involve tedious calculations. For certain user groups, auditing requires verifying figures against other business systems, which is highly time‑consuming and labor‑intensive.\n\nCurrent Workarounds \nCurrently, users rely on their own experience or practices to analyze financial figures, which may differ from one another. For figure verification purposes, users often use Excel or other tools to cross‑check and analyze the data. Each user maintains their own records by consolidating information from multiple systems, resulting in a lack of transparency and consistency.\n\nProject Scope\nTo develop an AI platform that can read MFR records of active projects, deliver quick risk analysis through a dashboard, and respond to queries from different user groups about the MFR records via a conversational dialogue interface.\n\nExpected Deliverables \nAI platform that could provide accurate analysis and response to the users\n\nRisks & Challenges \nPotental challeague is the future integration with the existing business application to streamline the figure and data from them.",
       "appliedGovernmentFunding": "NA",
       "fundingSupportHkd": 0,
       "projectTerminationFactor": "",
@@ -149,9 +149,9 @@
       "manager": "Ron Lee, IT",
       "owner": "Tammy Lo, CEB",
       "totalAmount": 0,
-      "startDate": "",
-      "endDate": "",
-      "status": "Planning",
+      "startDate": "2026-01-01",
+      "endDate": "2026-05-31",
+      "status": "Completed",
       "phases": [],
       "createdDate": "2026-05-25T05:15:43.520Z"
     },
