@@ -1,5 +1,5 @@
 {
-  "exportDate": "2026-07-10T06:52:46.272Z",
+  "exportDate": "2026-07-13T07:56:05.491Z",
   "pmis_projects": [
     {
       "id": "260501",
@@ -11,7 +11,7 @@
       "owner": "Derrick Pang",
       "totalAmount": 0,
       "startDate": "2026-05-01",
-      "endDate": "",
+      "endDate": "2026-12-31",
       "status": "In Progress",
       "phases": [
         {
@@ -134,7 +134,18 @@
       "startDate": "2026-10-30",
       "endDate": "",
       "status": "Planning",
-      "phases": [],
+      "phases": [
+        {
+          "id": "1783917793249",
+          "type": "POC",
+          "startDate": "",
+          "endDate": "",
+          "budget": 0,
+          "usedAmount": 0,
+          "status": "Completed",
+          "description": "Handover to IT Dept."
+        }
+      ],
       "createdDate": "2026-05-25T05:13:02.189Z"
     },
     {
@@ -219,7 +230,7 @@
       "description": "Develop IoT-integrated web platform for smart school bus tracking and management.",
       "detail": "Project Scope\n\nDevelop an integrated platform for school bus operation management: Develop a web-based platform which capability to integrate with IoT-enabled hardware, to provide smart tracking on bus status and route optimization to improve the school bus daily operation.\nReal time tracking and monitoring: Platform have ability to integrate with different device (e.g. GPS device, RFID tag) to provide real time feedback on bus location and status, as well as student attendance.\nEnhance communication: Develop instant notifications, alerts and updates for parents, operators and schools to improve communication efficiency and transparency. \n\n",
       "appliedGovernmentFunding": "Cash Rebate (HKPC)",
-      "fundingSupportHkd": 264000,
+      "fundingSupportHkd": 260000,
       "projectTerminationFactor": "",
       "support": "HKPC/HyPath",
       "manager": "Lawrence Chu, CW bus",
@@ -265,15 +276,15 @@
       "name": "GroundGuard",
       "description": "Intelligent Ground Stability and Safety Analysis for Construction",
       "detail": "Construction sites facing unique geotechnical challenges due to its complex terrain - characterized by mountainous landscapes, reclaimed land, and dense urban development. Lifting operation is a high-risk operation, to ensure ground stability is critical to preventing lifting failures and catastrophic incidents such as foundation settlement, slope failures, or structural collapse, which pose severe risks to workers, adjacent communities, and project timelines.\n\nThis project is aim to research and develop geotechnical detection system “GroundGuard”, which to addresses these challenges by integrating intelligent sensing, real-time data analytics, and spatial modeling to deliver objective, actionable insights into ground hardness and stability. This system empowers to proactively mitigate risks during lifting operation, as well as streamline compliance, and optimize construction workflows.",
-      "appliedGovernmentFunding": "",
-      "fundingSupportHkd": 0,
+      "appliedGovernmentFunding": "Cash Rebate (HKPC)",
+      "fundingSupportHkd": 1000000,
       "projectTerminationFactor": "",
       "support": "HKPC",
       "manager": "Charles Yeung",
       "owner": "William Luk",
-      "totalAmount": 3500000,
-      "startDate": "",
-      "endDate": "",
+      "totalAmount": 2000000,
+      "startDate": "2026-09-01",
+      "endDate": "2027-12-01",
       "status": "Planning",
       "phases": [],
       "createdDate": "2026-06-15T09:26:48.590Z"
@@ -284,7 +295,7 @@
       "description": "Compliance AI: Centralized knowledge base for instant safety, environmental, and quality regulatory answers",
       "detail": "背景：Background\nScope: The Compliance Department manages safety, environmental, and quality standards across all projects.\nChallenge: Regulatory frameworks, legal requirements, and internal company manuals are dense, vast, and constantly updating.\nDemand: Project teams require immediate, accurate verification to prevent costly legal or operational violations.\n\nObjective\nCentralize: Create a single conversational AI source for all verified compliance knowledge.\nAutomate: Instantly answer routine queries regarding safety protocols, green regulations, and quality controls.\nMitigate: Reduce human error and project delays by delivering real-time, compliant decision support.\n\n痛點：Information Overload: Staff waste excessive time searching through massive PDFs and manual updates.\nResponse Bottlenecks: The Compliance Dept becomes a bottleneck, delaying project timelines while reviewing queries.\nInconsistency: Different team members may interpret complex legal jargon differently, risking non-compliance.\nKnowledge Silos: Critical compliance updates fail to reach field workers dynamically.\n\n範圍：1. Ingestion of company manuals, safety protocols, environmental regulations, and quality standards.\n2. Integration with internal document repositories\n3. A feedback loop mechanism for users to flag inaccurate or incomplete AI responses\n\n交付成果：1. AI chatbot integrated into the company website.\n2. A secure, indexed database containing all vetted compliance documents.\n3. A dashboard for the Compliance Dept to update manuals, review logs.\n4. User guide, administrator maintenance manual, and data security compliance report.\n5. Training sessions and material for compliance administrators and end-users.\n\n預期效益：1. Immediate answers to compliance queries, eliminating days of manual document searching.\n2. Instant support for night-shift project workers or teams across different time zones. (24/7)\n3. Compiance staff save up to 40% of their time by automating repetitive questions.\n4. Drastic decline in human error caused by outdated manual versions or legal requirments\n\n實施階段：Phase 1: Discovery & Planning (Weeks 1–2): Define exact user stories, map data sources, and establish security protocols.\nPhase 2: Data Ingestion & Structuring (Weeks 3–5): Gather, clean, and convert text from PDFs, manuals, and laws into AI-readable data.\nPhase 3: Model Development & Testing (Weeks 6–36): Build the chatbot, engineer prompts, and run closed Alpha tests with experts.\nPhase 4: Pilot & Refinement (Weeks 36–38): Release Beta version to select project teams, collect feedback, and fine-tune accuracy.\nPhase 5: Go-Live & Training (Weeks 39–40): Full company launch, user training, and transition to the maintenance team.\n\n其他資源：NA\n\n備註：NA",
       "startDate": "2026-05-29",
-      "endDate": "",
+      "endDate": "2027-03-31",
       "owner": "Wong Chi Lok",
       "manager": "Wong Chi Lok",
       "support": "Mr. Hugo Wu",
@@ -314,7 +325,7 @@
       "description": "AI auto-extracts geotechnical data to boost design efficiency",
       "detail": "背景：The proposed solution is an AI powered, cloud-based platform designed to assist designer in geotechnical design. This system aims to provide the following key features:\n\n1) AI enhancement for Geotechnical Information Extraction: the system will automatically extract geotechnical information from final field test reports, laboratory tests reports, GInfo system, slope safety system and SIGMA reports from Lands Department website.\n2) AI driven soil parameters interpretation: the AI powered system will extract the extracted information (e.g. SPT N values for various soil types, triaxial tests results) for design parameters interpretation. For instant, output will be E values, friction angle, cohesion and permeability for various soil types.\n3) AI driven layout plan & cut sections in CAD formats: the AI powered system will utilize the extracted information (e.g. soil stratum of bored hole logs, borehole coordinates, site layout plan with boundaries) to form sections with projected BH logs in CAD format. Those cut sections can be imported into SLOPE W/ PLAXIS / SAFE etc. for design.\n4) Design reminder for temporary works: basic warning/reminders will be given for site specific conditions. For instant, design reminder will be given under high design ground water level.\n\nBy streamlining above geotechnical design, the proposed solution will enhance design efficiency and accuracy. The implementation is expected to reduce design risks, improve efficiency, and foster a culture of innovation, aligning with the goals of the Innovation & AI Campaign.\n\n痛點：1. Time-Intensive Processes:\nManually entering and consolidating large volumes of geological data is laborious and can significantly delay project timelines.\n2. Human Errors:\nManual data entry is prone to mistakes such as data misinterpretation, transcription errors, and inconsistent formatting, which can compromise data integrity.\n3. Data Inconsistency and Variability:\nDifferent data sources and formats may lead to inconsistencies, making it difficult to standardize and accurately consolidate information.\n4. Difficulty in Managing Complex Data:\nGeological data often involve complex, multi-layered, and spatially variable information that is challenging to capture and organize manually.\n5. Limited Data Visualization and Analysis:\nManual consolidation may hinder effective visualization and analysis of geological profiles, reducing the ability to identify patterns or anomalies.\n6. Challenges in Ensuring Data Completeness:\nEnsuring all relevant data are captured and integrated without omissions is difficult when relying solely on manual processes.\n7. Reproducibility and Version Control Issues:\nMaintaining consistent updates, revisions, and version control of geological data can be problematic without automated systems.\n8. Skill Dependency:\nManual processes require skilled personnel, and variability in expertise can affect the quality and consistency of data consolidation.\n\n範圍：NA\n\n交付成果：a. AI for Gathering Information\n\nAutomatically download reports from official sources.\nUse AI tools to read PDFs and extract key data like soil types and test results.\nOrganize this data into easy-to-use formats for analysis.\n\n\nb. AI for Creating Layouts and Cross-Sections\n\nCombine the extracted data to build detailed site models.\nUse AI algorithms to generate cross-sections of the soil and rock layers.\nConvert these sections into CAD files for use in design software, with automatic updates as new data arrives.\n\n\nc. AI for Analyzing Soil Data\n\nUse machine learning to interpret test results and estimate soil properties.\nGenerate reports that summarize findings to support design decisions.\n\n\nd. AI for Warnings and Reminders\n\nSet rules to detect issues like high water levels or slope risks.\nSend alerts to engineers to consider safety measures or adjustments.\n\n預期效益：Increased Efficiency\n\nAutomates data collection, analysis, and reporting, significantly reducing manual effort and time.\n\n\nImproved Accuracy\n\nMinimizes human errors in data extraction, interpretation, and modeling processes.\n\n\nFaster Decision-Making\n\nProvides real-time insights and alerts, enabling quicker response to potential issues.\n\n\nEnhanced Data Integration\n\nSeamlessly combines diverse data sources for comprehensive site understanding.\n\n\nCost Savings\n\nReduces labor costs and minimizes the need for repeated or manual testing and drafting.\n\n\nBetter Risk Management\n\nEarly warnings and detailed analysis help identify and mitigate potential geotechnical hazards.\n\n\nConsistent and Standardized Output\n\nEnsures uniformity in reports, layouts, and analysis, improving reliability.\n\n\nFacilitates Advanced Analysis\n\nEnables sophisticated modeling and simulations that support innovative design solutions.\n\n\nSupports Regulatory Compliance\n\nMaintains documentation and data standards required for permits and inspections.\n\n\nScalability and Flexibility\n\nEasily adapts to different project sizes and types with automated updates and data integration.\n\n實施階段：NA\n\n其他資源：NA\n\n備註：AI003 - AI-geo-neer_KA HO NG.pdf",
       "startDate": "2027-12-31",
-      "endDate": "",
+      "endDate": "2030-12-31",
       "owner": "Abby Liu",
       "manager": "Abby Liu",
       "support": "NA",
@@ -324,7 +335,8 @@
       "projectTerminationFactor": "Budget Exhaustion\nSimilar Product exist in the market\nStakeholder Decision\nStakeholders or sponsors decide to cancel or halt the project due to strategic shifts or priority changes.",
       "createdFromIdea": "IDEA-800747",
       "createdDate": "2026-06-30T05:53:38.408Z",
-      "phases": []
+      "phases": [],
+      "fundingSupportHkd": 0
     },
     {
       "id": "260605",
